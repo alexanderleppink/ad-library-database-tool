@@ -1,6 +1,7 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
+      META_USER_ACCESS_TOKEN: string;
       NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
       NEXT_PUBLIC_SUPABASE_URL: string;
       NX_DAEMON: string;
@@ -24,4 +25,4 @@ declare global {
   }
 }
 
-export {};
+export {}

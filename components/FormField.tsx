@@ -1,4 +1,10 @@
-import type { ForwardRefExoticComponent, MutableRefObject, Ref, RefAttributes } from 'react';
+import type {
+  ForwardRefExoticComponent,
+  MutableRefObject,
+  ReactNode,
+  Ref,
+  RefAttributes
+} from 'react';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import type {
   FlowbiteSelectTheme,
@@ -8,14 +14,26 @@ import type {
 } from 'flowbite-react';
 import { getTheme, Select, TextInput } from 'flowbite-react';
 import clsx from 'clsx';
-import type { FieldError, FieldErrors, FieldErrorsImpl, Merge } from 'react-hook-form';
+import type {
+  ControllerProps,
+  FieldError,
+  FieldErrors,
+  FieldErrorsImpl,
+  FieldValues,
+  Merge
+} from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import type { DeepPartial } from 'ts-essentials';
 import { get, isFunction } from 'lodash-es';
 
-type FormFieldProps<T extends SelectProps | TextInputProps> = T & {
+type FormFieldProps<T extends SelectProps | TextInputProps> = T & FormFrameProps;
+
+type FormFrameProps = {
   label: string;
   required?: boolean;
   errors: FieldErrors<any>;
+  name: string;
+  className?: string;
 };
 
 function withFormField<
@@ -31,9 +49,6 @@ function withFormField<
     formFieldProps: FormFieldProps<Props>,
     forwardRef: Ref<Element>
   ) {
-    const error = get(formFieldProps.errors, formFieldProps.name as string);
-    const errorMessage = getErrorMessage(error);
-
     const ref = useRef<Element>(null);
     const inputRef = forwardRef
       ? isFunction(forwardRef)
@@ -56,28 +71,52 @@ function withFormField<
     }, [ref.current?.value]);
 
     return (
-      <div className={clsx('flex flex-col space-y-1', formFieldProps.className)}>
-        <div className="text-sm leading-6">
-          {formFieldProps.label}
-          {formFieldProps.required ? '*' : ''}
-        </div>
-        <Component
-          color={errorMessage ? 'failure' : undefined}
-          {...formFieldProps}
-          onBlur={onBlur}
-          ref={inputRef}
-          theme={themeFn(value)}
-        />
-        <div
-          className={clsx('text-xs text-red-500', {
-            'opacity-0': !errorMessage
-          })}
-        >
-          {errorMessage ?? 'empty'}
-        </div>
-      </div>
+      <FormFrame {...formFieldProps}>
+        {({ errorMessage }) => (
+          <Component
+            color={errorMessage ? 'failure' : undefined}
+            {...formFieldProps}
+            onBlur={onBlur}
+            ref={inputRef}
+            theme={themeFn(value)}
+          />
+        )}
+      </FormFrame>
     );
   });
+}
+
+export function FormFrame({
+  errors,
+  label,
+  required,
+  className,
+  name,
+  children
+}: FormFrameProps & {
+  children: (obj: {
+    error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+    errorMessage: string | null;
+  }) => ReactNode;
+}) {
+  const error = get(errors, name as string);
+  const errorMessage = getErrorMessage(error);
+  return (
+    <div className={clsx('flex flex-col space-y-1', className)}>
+      <div className="text-sm leading-6">
+        {label}
+        {required ? '*' : ''}
+      </div>
+      {children({ error, errorMessage })}
+      <div
+        className={clsx('text-xs text-red-500', {
+          'opacity-0': !errorMessage
+        })}
+      >
+        {errorMessage ?? 'empty'}
+      </div>
+    </div>
+  );
 }
 
 function getErrorMessage(error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined) {
@@ -116,3 +155,16 @@ export const SelectFormField = withFormField(Select, (value) => ({
     }
   }
 }));
+
+export function FormFieldController<T extends FieldValues>({
+  control,
+  render,
+  name,
+  ...formFrameProps
+}: Omit<FormFrameProps, 'name'> & ControllerProps<T>) {
+  return (
+    <FormFrame {...formFrameProps} name={name}>
+      {() => <Controller name={name} control={control} render={(val) => render(val)} />}
+    </FormFrame>
+  );
+}

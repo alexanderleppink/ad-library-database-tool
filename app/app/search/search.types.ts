@@ -12,8 +12,8 @@ export const SearchConfigSchema = z
     status: z.enum(ensureMinOneItem(mutable(adStatusList))),
     languages: z.enum(ensureMinOneItem(mutable(languagesList))),
     countries: z.enum(ensureMinOneItem(mutable(countryList))),
-    deliveryDateStart: z.string().datetime(),
-    deliveryDateEnd: z.string().datetime()
+    deliveryDateStart: z.date().nullable(),
+    deliveryDateEnd: z.date().nullable()
   })
   .partial();
 
@@ -25,7 +25,7 @@ export function createDefaultSearchConfig(): SearchConfig {
     status: 'active',
     languages: 'nl',
     countries: 'NL',
-    deliveryDateStart: '',
-    deliveryDateEnd: ''
+    deliveryDateStart: undefined,
+    deliveryDateEnd: undefined
   };
 }

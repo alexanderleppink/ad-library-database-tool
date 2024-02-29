@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Navbar,
-  NavbarBrand,
-  NavbarCollapse,
-  NavbarLink,
-  NavbarToggle
-} from 'flowbite-react';
+import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
 import Link from 'next/link';
 
 interface NavigationProps {}

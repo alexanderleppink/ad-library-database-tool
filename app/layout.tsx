@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <main className="min-h-screen flex flex-col">
             <Navigation />
-            {children}
+            <div className="flex flex-col items-center">{children}</div>
           </main>
         </Providers>
       </body>

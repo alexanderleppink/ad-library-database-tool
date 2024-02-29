@@ -1,6 +1,5 @@
 import React from 'react';
 import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
-import Link from 'next/link';
 
 interface NavigationProps {}
 
@@ -16,12 +15,8 @@ function Navigation({}: NavigationProps) {
         <NavbarToggle />
       </div>
       <NavbarCollapse>
-        <Link href="/app/dashboard">
-          <NavbarLink>Dashboard</NavbarLink>
-        </Link>
-        <Link href="/app/search">
-          <NavbarLink>Search</NavbarLink>
-        </Link>
+        <NavbarLink href="/app/dashboard">Dashboard</NavbarLink>
+        <NavbarLink href="/app/search">Search</NavbarLink>
       </NavbarCollapse>
     </Navbar>
   );

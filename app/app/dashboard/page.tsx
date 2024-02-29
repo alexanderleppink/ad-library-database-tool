@@ -3,7 +3,7 @@ import React from 'react';
 interface DashboardPageProps {}
 
 function DashboardPage({}: DashboardPageProps) {
-  return <div></div>;
+  return <div>dashboard</div>;
 }
 
 export default DashboardPage;

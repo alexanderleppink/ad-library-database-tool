@@ -3,7 +3,7 @@ import React from 'react';
 interface SearchPageProps {}
 
 function SearchPage({}: SearchPageProps) {
-  return <div></div>;
+  return <div>search</div>;
 }
 
 export default SearchPage;

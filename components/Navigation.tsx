@@ -23,12 +23,12 @@ function Navigation({}: NavigationProps) {
         <NavbarToggle />
       </div>
       <NavbarCollapse>
-        <Link href="/">
-          <NavbarLink href="#" active>
-            Home
-          </NavbarLink>
+        <Link href="/app/dashboard">
+          <NavbarLink>Dashboard</NavbarLink>
         </Link>
-        <NavbarLink href="#">About</NavbarLink>
+        <Link href="/app/search">
+          <NavbarLink>Search</NavbarLink>
+        </Link>
       </NavbarCollapse>
     </Navbar>
   );

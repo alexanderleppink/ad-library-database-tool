@@ -43,7 +43,9 @@ function withFormField<
   Component: ForwardRefExoticComponent<Props & RefAttributes<Element>>,
   themeFn: (
     value: string
-  ) => DeepPartial<Props extends SelectProps ? FlowbiteSelectTheme : FlowbiteTextInputTheme>
+  ) =>
+    | DeepPartial<Props extends SelectProps ? FlowbiteSelectTheme : FlowbiteTextInputTheme>
+    | undefined
 ) {
   return forwardRef(function FormField(
     formFieldProps: FormFieldProps<Props>,
@@ -136,25 +138,9 @@ function getErrorMessage(error: FieldError | Merge<FieldError, FieldErrorsImpl<a
   }
 }
 
-export const TextInputFormField = withFormField(TextInput, (value) => ({
-  field: {
-    input: {
-      colors: {
-        gray: `${getTheme().textInput.field.input.colors.gray} ${value ? '!border-gray-700' : ''}`
-      }
-    }
-  }
-}));
+export const TextInputFormField = withFormField(TextInput, () => undefined);
 
-export const SelectFormField = withFormField(Select, (value) => ({
-  field: {
-    select: {
-      colors: {
-        gray: `${getTheme().select.field.select.colors.gray} ${value ? '!border-gray-700' : ''}`
-      }
-    }
-  }
-}));
+export const SelectFormField = withFormField(Select, () => undefined);
 
 export function FormFieldController<T extends FieldValues>({
   control,

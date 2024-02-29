@@ -16,6 +16,8 @@
     "@supabase/supabase-js": "latest",
     "autoprefixer": "10.4.17",
     "eslint": "^8.57.0",
+    "flowbite": "^2.3.0",
+    "flowbite-react": "^0.7.2",
     "geist": "^1.2.1",
     "next": "latest",
     "postcss": "8.4.33",

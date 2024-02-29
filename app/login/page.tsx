@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import { SubmitButton } from './submit-button';
+import { SubmitButton } from './SubmitButton';
 import { TextInput } from 'flowbite-react';
 
 export default function Login({ searchParams }: { searchParams: { message: string } }) {

@@ -12,6 +12,8 @@ import SearchConfiguration from '@/app/app/search/SearchConfiguration';
 import { Button, Dropdown, TextInput } from 'flowbite-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
+import { queryAllPages } from '@/app/app/(ad-query)/actions';
+import { searchAds } from '@/app/app/search/actions';
 
 interface SearchFormProps {}
 
@@ -21,8 +23,8 @@ function SearchForm({}: SearchFormProps) {
     defaultValues: createDefaultSearchConfig()
   });
 
-  const handleSearch = (data: SearchConfig) => {
-    console.log(data);
+  const handleSearch = async (data: SearchConfig) => {
+    const searchResults = await queryAllPages(() => searchAds(data));
   };
 
   return (
@@ -63,11 +65,11 @@ function StatusRow({
 }) {
   const getStatusText = (status: AdStatus) => {
     switch (status) {
-      case 'active':
+      case 'ACTIVE':
         return 'only active';
-      case 'inactive':
+      case 'INACTIVE':
         return 'only inactive';
-      case 'all':
+      case 'ALL':
         return 'all';
     }
   };

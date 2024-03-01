@@ -1,7 +1,7 @@
 'use client';
 
 import type { KeyboardEventHandler } from 'react';
-import React, { useState } from 'react';
+import React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,29 +11,40 @@ import SearchConfiguration from '@/app/app/search/SearchConfiguration';
 import { Button, TextInput } from 'flowbite-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { searchAds } from '@/app/app/search/actions';
-import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResults from '@/app/app/(ad-query)/SearchResults';
+import useSWRMutation from 'swr/mutation';
+import clsx from 'clsx';
 
-interface SearchFormProps {}
+interface SearchFormProps {
+  className?: string;
+}
 
-function SearchForm({}: SearchFormProps) {
+export function useSearch() {
+  return useSWRMutation(
+    'search',
+    async (_, { arg }: { arg: SearchConfig }) => await searchAds(arg)
+  );
+}
+
+function SearchForm({ className }: SearchFormProps) {
   const formObject = useForm({
     resolver: zodResolver(SearchConfigSchema),
     defaultValues: createDefaultSearchConfig()
   });
 
-  const [searchResults, setSearchResults] = useState<QueryResultData[]>();
-
-  const handleSearch = async (data: SearchConfig) => {
-    const searchResults = await searchAds(data);
-    setSearchResults(searchResults);
-  };
+  const { data: searchResults, error, trigger, isMutating } = useSearch();
 
   return (
-    <div>
-      <SearchConfiguration formObject={formObject} />
-      <Search onSubmit={handleSearch} formObject={formObject} />
-      {searchResults && <SearchResults queryResultData={searchResults} />}
+    <div className={clsx(className, 'flex flex-col gap-4')}>
+      <div className="max-w-2xl mx-auto">
+        <SearchConfiguration formObject={formObject} />
+        <Search onSubmit={trigger} formObject={formObject} />
+      </div>
+      <SearchResults
+        error={error?.message}
+        queryResultData={searchResults}
+        isLoading={isMutating}
+      />
     </div>
   );
 }
@@ -45,9 +56,15 @@ function Search({
   formObject: UseFormReturn<SearchConfig>;
   onSubmit: (data: SearchConfig) => unknown;
 }) {
-  const { register, handleSubmit } = formObject;
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = formObject;
 
   const handleKeyUp: KeyboardEventHandler = (event) => {
+    if (isSubmitting) return;
+
     if (event.key === 'Enter') {
       handleSubmit(onSubmit)();
     }
@@ -56,8 +73,13 @@ function Search({
   return (
     <div className="p-4 flex flex-col gap-2">
       <div className="flex gap-1">
-        <TextInput className="grow" onKeyUp={handleKeyUp} {...register('searchTerms')} />
-        <Button onClick={handleSubmit(onSubmit)}>
+        <TextInput
+          className="grow"
+          placeholder="Search terms..."
+          onKeyUp={handleKeyUp}
+          {...register('searchTerms')}
+        />
+        <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
           <MagnifyingGlassIcon className="h-5" />
         </Button>
       </div>

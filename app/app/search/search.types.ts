@@ -7,7 +7,7 @@ export const adStatusList = ['ALL', 'ACTIVE', 'INACTIVE'] as const;
 export type AdStatus = (typeof adStatusList)[number];
 
 export const SearchConfigSchema = z.object({
-  searchTerms: z.string(),
+  searchTerms: z.string().min(1),
   status: z.enum(ensureMinOneItem(mutable(adStatusList))),
   languages: z.array(z.enum(ensureMinOneItem(mutable(languagesList)))).min(1),
   countries: z.array(z.enum(ensureMinOneItem(mutable(countryList)))).min(1),

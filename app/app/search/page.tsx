@@ -8,7 +8,7 @@ function SearchPage({}: SearchPageProps) {
     <>
       <h2 className="text-3xl">Custom Search</h2>
 
-      <SearchForm />
+      <SearchForm className="w-full" />
     </>
   );
 }

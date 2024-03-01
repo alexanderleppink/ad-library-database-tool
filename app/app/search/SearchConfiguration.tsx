@@ -81,7 +81,7 @@ function SearchConfiguration({
       </SelectFormField>
 
       <TextInputFormField
-        {...register('maxResults')}
+        {...register('maxResults', { valueAsNumber: true })}
         type="number"
         label="Maximum results"
         errors={errors}

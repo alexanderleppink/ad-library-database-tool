@@ -9,7 +9,6 @@ import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
 import { queryAllPages } from '@/app/app/(ad-query)/adQuery.helper';
 
 const fields = mutable([
-  'id',
   'ad_creative_link_captions',
   'ad_delivery_start_time',
   'ad_snapshot_url',
@@ -43,7 +42,10 @@ function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {
     languages: JSON.stringify(searchConfig.languages),
     ad_active_status: searchConfig.status,
     fields: fields.join(', '),
-    limit: pageSize.toString(),
+    limit:
+      !searchConfig.maxResults || pageSize < searchConfig.maxResults
+        ? pageSize.toString()
+        : searchConfig.maxResults.toString(),
     ...(searchConfig.deliveryDateEnd
       ? { ad_delivery_date_max: format(searchConfig.deliveryDateEnd, 'yyyy-MM-dd') }
       : {}),

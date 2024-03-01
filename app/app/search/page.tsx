@@ -3,6 +3,8 @@ import SearchForm from '@/app/app/search/SearchForm';
 
 interface SearchPageProps {}
 
+export const runtime = 'edge';
+
 function SearchPage({}: SearchPageProps) {
   return (
     <>

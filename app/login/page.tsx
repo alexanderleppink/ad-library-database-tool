@@ -48,7 +48,7 @@ export default function Login({ searchParams }: { searchParams: { message: strin
   };
 
   return (
-    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-8">
+    <div className="flex flex-col w-full px-8 sm:max-w-md justify-center gap-8 m-auto">
       <h2 className="text-3xl my-4">Login to your account</h2>
 
       <form className="animate-in flex-1 flex flex-col w-full justify-center gap-4 text-foreground">

@@ -12,6 +12,10 @@ export const updateSession = async (request: NextRequest) => {
       }
     });
 
+    if (request.url.includes('/auth/logout')) {
+      return response;
+    }
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -59,6 +63,8 @@ export const updateSession = async (request: NextRequest) => {
         }
       }
     );
+
+    console.log('kek');
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs

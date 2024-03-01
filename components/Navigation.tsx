@@ -1,11 +1,30 @@
+'use server';
+
 import React from 'react';
-import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle } from 'flowbite-react';
+import {
+  Button,
+  Navbar,
+  NavbarBrand,
+  NavbarCollapse,
+  NavbarLink,
+  NavbarToggle
+} from 'flowbite-react';
+import { createClient } from '@/utils/supabase/server';
+import { logout } from '@/app/auth/actions';
 
 interface NavigationProps {}
 
-function Navigation({}: NavigationProps) {
+export default Navigation;
+
+async function Navigation({}: NavigationProps) {
+  const supabase = createClient();
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
   return (
-    <Navbar className="flex justify-between p-4">
+    <Navbar className="flex justify-between p-4 items-center">
       <NavbarBrand>
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
           Ad Library Database Tool
@@ -15,11 +34,22 @@ function Navigation({}: NavigationProps) {
         <NavbarToggle />
       </div>
       <NavbarCollapse>
-        <NavbarLink href="/app/dashboard">Dashboard</NavbarLink>
-        <NavbarLink href="/app/search">Search</NavbarLink>
+        <NavbarLink className="flex items-center" href="/app/dashboard">
+          Dashboard
+        </NavbarLink>
+        <NavbarLink className="flex items-center" href="/app/search">
+          Search
+        </NavbarLink>
+        {user ? (
+          <form action={logout}>
+            <button type="submit">Logout</button>
+          </form>
+        ) : (
+          <Button size="sm" href="/login">
+            Login
+          </Button>
+        )}
       </NavbarCollapse>
     </Navbar>
   );
 }
-
-export default Navigation;

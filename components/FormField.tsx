@@ -12,7 +12,7 @@ import type {
   SelectProps,
   TextInputProps
 } from 'flowbite-react';
-import { getTheme, Select, TextInput } from 'flowbite-react';
+import { Select, TextInput } from 'flowbite-react';
 import clsx from 'clsx';
 import type {
   ControllerProps,
@@ -25,6 +25,7 @@ import type {
 import { Controller } from 'react-hook-form';
 import type { DeepPartial } from 'ts-essentials';
 import { get, isFunction } from 'lodash-es';
+import { FieldPath } from 'react-hook-form/dist/types';
 
 type FormFieldProps<T extends SelectProps | TextInputProps> = T & FormFrameProps;
 
@@ -142,12 +143,12 @@ export const TextInputFormField = withFormField(TextInput, () => undefined);
 
 export const SelectFormField = withFormField(Select, () => undefined);
 
-export function FormFieldController<T extends FieldValues>({
+export function FormFieldController<T extends FieldValues, N extends FieldPath<T>>({
   control,
   render,
   name,
   ...formFrameProps
-}: Omit<FormFrameProps, 'name'> & ControllerProps<T>) {
+}: Omit<FormFrameProps, 'name'> & ControllerProps<T, N>) {
   return (
     <FormFrame {...formFrameProps} name={name}>
       {() => <Controller name={name} control={control} render={(val) => render(val)} />}

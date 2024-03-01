@@ -10,8 +10,8 @@ export const SearchConfigSchema = z
   .object({
     searchTerms: z.string(),
     status: z.enum(ensureMinOneItem(mutable(adStatusList))),
-    languages: z.enum(ensureMinOneItem(mutable(languagesList))),
-    countries: z.enum(ensureMinOneItem(mutable(countryList))),
+    languages: z.array(z.enum(ensureMinOneItem(mutable(languagesList)))).min(1),
+    countries: z.array(z.enum(ensureMinOneItem(mutable(countryList)))).min(1),
     deliveryDateStart: z.date().nullable(),
     deliveryDateEnd: z.date().nullable()
   })
@@ -23,8 +23,8 @@ export function createDefaultSearchConfig(): SearchConfig {
   return {
     searchTerms: '',
     status: 'active',
-    languages: 'nl',
-    countries: 'NL',
+    languages: ['nl'],
+    countries: ['NL'],
     deliveryDateStart: undefined,
     deliveryDateEnd: undefined
   };

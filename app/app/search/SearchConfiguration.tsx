@@ -1,11 +1,12 @@
 import React from 'react';
-import { FormFieldController, SelectFormField } from '@/components/FormField';
+import { FormFieldController } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
 import { countryList, languagesList } from '@/app/app/search/search.types';
 import { Button, Datepicker } from 'flowbite-react';
 import { format } from 'date-fns';
 import { XCircleIcon } from '@heroicons/react/24/solid';
+import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
 
 interface SearchConfigurationProps {
   formObject: UseFormReturn<SearchConfig>;
@@ -14,26 +15,44 @@ interface SearchConfigurationProps {
 function SearchConfiguration({
   formObject: {
     control,
-    formState: { errors },
-    register
+    formState: { errors }
   }
 }: SearchConfigurationProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 border rounded p-4">
-      <SelectFormField label="Languages" errors={errors} {...register(`languages`)}>
-        {languagesList.map((lang) => (
-          <option key={lang} value={lang}>
-            {lang}
-          </option>
-        ))}
-      </SelectFormField>
-      <SelectFormField label="Reached countries" errors={errors} {...register(`countries`)}>
-        {countryList.map((country) => (
-          <option key={country} value={country}>
-            {country}
-          </option>
-        ))}
-      </SelectFormField>
+      <FormFieldController
+        control={control}
+        errors={errors}
+        name="languages"
+        render={({ field: { value, onChange } }) => (
+          <MultipleSelectDropdown
+            value={value || []}
+            items={languagesList.map((lang) => ({
+              value: lang,
+              label: lang
+            }))}
+            onChange={onChange}
+          />
+        )}
+        label="Languages"
+      />
+
+      <FormFieldController
+        control={control}
+        errors={errors}
+        name="countries"
+        render={({ field: { value, onChange } }) => (
+          <MultipleSelectDropdown
+            value={value || []}
+            items={countryList.map((country) => ({
+              value: country,
+              label: country
+            }))}
+            onChange={onChange}
+          />
+        )}
+        label="Languages"
+      />
 
       <FormFieldController
         control={control}
@@ -58,7 +77,7 @@ function DatepickerWithClearButton({
   field: { value, onChange }
 }: {
   field: {
-    value: Date | string | null | undefined;
+    value: Date | null | undefined;
     onChange: (date: Date | null) => void;
   };
 }) {

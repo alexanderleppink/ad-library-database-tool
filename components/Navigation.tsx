@@ -1,5 +1,3 @@
-'use server';
-
 import React from 'react';
 import {
   Button,
@@ -42,7 +40,9 @@ async function Navigation({}: NavigationProps) {
         </NavbarLink>
         {user ? (
           <form action={logout}>
-            <button type="submit">Logout</button>
+            <Button size="xs" type="submit">
+              Logout
+            </Button>
           </form>
         ) : (
           <Button size="sm" href="/login">

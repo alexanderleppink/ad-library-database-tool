@@ -14,6 +14,7 @@ import { searchAds } from '@/app/app/search/actions';
 import SearchResults from '@/app/app/(ad-query)/SearchResults';
 import useSWRMutation from 'swr/mutation';
 import clsx from 'clsx';
+import { queryAllPages } from '@/app/app/(ad-query)/adQuery.helper';
 
 interface SearchFormProps {
   className?: string;
@@ -22,7 +23,8 @@ interface SearchFormProps {
 export function useSearch() {
   return useSWRMutation(
     'search',
-    async (_, { arg }: { arg: SearchConfig }) => await searchAds(arg)
+    async (_, { arg }: { arg: SearchConfig }) =>
+      await queryAllPages(searchAds)(arg, { totalLimit: arg.maxResults })
   );
 }
 

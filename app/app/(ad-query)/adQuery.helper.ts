@@ -20,6 +20,7 @@ export function queryAllPages<Q extends object, R extends QueryResult<any>>(
       const { paging, data } = fetchResult;
 
       allResults = [...allResults, ...data];
+      console.info(`fetched ${page} page`);
       if (data.length < pageSize || (totalLimit && allResults.length >= totalLimit)) {
         break;
       }

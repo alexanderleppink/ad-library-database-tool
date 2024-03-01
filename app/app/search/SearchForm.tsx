@@ -1,19 +1,18 @@
 'use client';
 
-import React from 'react';
+import type { KeyboardEventHandler } from 'react';
+import React, { useState } from 'react';
 import type { UseFormReturn } from 'react-hook-form';
-import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { AdStatus, SearchConfig } from '@/app/app/search/search.types';
-import { adStatusList } from '@/app/app/search/search.types';
+import type { SearchConfig } from '@/app/app/search/search.types';
 import { createDefaultSearchConfig, SearchConfigSchema } from '@/app/app/search/search.types';
 import SearchConfiguration from '@/app/app/search/SearchConfiguration';
-import { Button, Dropdown, TextInput } from 'flowbite-react';
+import { Button, TextInput } from 'flowbite-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import clsx from 'clsx';
-import { queryAllPages } from '@/app/app/(ad-query)/actions';
 import { searchAds } from '@/app/app/search/actions';
+import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
+import SearchResults from '@/app/app/(ad-query)/SearchResults';
 
 interface SearchFormProps {}
 
@@ -23,14 +22,18 @@ function SearchForm({}: SearchFormProps) {
     defaultValues: createDefaultSearchConfig()
   });
 
+  const [searchResults, setSearchResults] = useState<QueryResultData[]>();
+
   const handleSearch = async (data: SearchConfig) => {
-    const searchResults = await queryAllPages(() => searchAds(data));
+    const searchResults = await searchAds(data);
+    setSearchResults(searchResults);
   };
 
   return (
     <div>
       <SearchConfiguration formObject={formObject} />
       <Search onSubmit={handleSearch} formObject={formObject} />
+      {searchResults && <SearchResults queryResultData={searchResults} />}
     </div>
   );
 }
@@ -43,61 +46,21 @@ function Search({
   onSubmit: (data: SearchConfig) => unknown;
 }) {
   const { register, handleSubmit } = formObject;
+
+  const handleKeyUp: KeyboardEventHandler = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <div className="p-4 flex flex-col gap-2">
       <div className="flex gap-1">
-        <TextInput className="grow" {...register('searchTerms')} />
+        <TextInput className="grow" onKeyUp={handleKeyUp} {...register('searchTerms')} />
         <Button onClick={handleSubmit(onSubmit)}>
           <MagnifyingGlassIcon className="h-5" />
         </Button>
       </div>
-      <StatusRow formObject={formObject} className="self-center" />
-    </div>
-  );
-}
-
-function StatusRow({
-  formObject: { control },
-  className
-}: {
-  className?: string;
-  formObject: UseFormReturn<SearchConfig>;
-}) {
-  const getStatusText = (status: AdStatus) => {
-    switch (status) {
-      case 'ACTIVE':
-        return 'only active';
-      case 'INACTIVE':
-        return 'only inactive';
-      case 'ALL':
-        return 'all';
-    }
-  };
-  return (
-    <div className={clsx(className, 'flex gap-2 text')}>
-      include
-      <Controller
-        control={control}
-        render={({ field: { value, onChange } }) => (
-          <Dropdown
-            value={value}
-            label=""
-            renderTrigger={() => (
-              <div className="font-medium text-blue-600 hover:underline cursor-pointer">
-                {getStatusText(value as AdStatus)}
-              </div>
-            )}
-          >
-            {adStatusList.map((status) => (
-              <Dropdown.Item key={status} onClick={() => onChange(status)}>
-                {getStatusText(status)}
-              </Dropdown.Item>
-            ))}
-          </Dropdown>
-        )}
-        name="status"
-      />
-      ads
     </div>
   );
 }

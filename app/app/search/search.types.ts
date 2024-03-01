@@ -12,7 +12,8 @@ export const SearchConfigSchema = z.object({
   languages: z.array(z.enum(ensureMinOneItem(mutable(languagesList)))).min(1),
   countries: z.array(z.enum(ensureMinOneItem(mutable(countryList)))).min(1),
   deliveryDateStart: z.date().nullable(),
-  deliveryDateEnd: z.date().nullable()
+  deliveryDateEnd: z.date().nullable(),
+  maxResults: z.number().optional()
 });
 
 export type SearchConfig = z.infer<typeof SearchConfigSchema>;
@@ -24,6 +25,7 @@ export function createDefaultSearchConfig(): SearchConfig {
     languages: ['nl'],
     countries: ['NL'],
     deliveryDateStart: null,
-    deliveryDateEnd: null
+    deliveryDateEnd: null,
+    maxResults: 10000
   };
 }

@@ -21,9 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <main className="min-h-screen flex flex-col">
             <Navigation />
-            <div className="gap-6 flex flex-col items-center p-4 md:p-8 max-w-2xl mx-auto">
-              {children}
-            </div>
+            <div className="gap-6 flex flex-col items-center p-4 md:p-8">{children}</div>
           </main>
         </Providers>
       </body>

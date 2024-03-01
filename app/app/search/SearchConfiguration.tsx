@@ -1,7 +1,8 @@
 import React from 'react';
-import { FormFieldController } from '@/components/FormField';
+import { FormFieldController, SelectFormField, TextInputFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
+import { adStatusList } from '@/app/app/search/search.types';
 import { countryList, languagesList } from '@/app/app/search/search.types';
 import { Button, Datepicker } from 'flowbite-react';
 import { format } from 'date-fns';
@@ -15,6 +16,7 @@ interface SearchConfigurationProps {
 function SearchConfiguration({
   formObject: {
     control,
+    register,
     formState: { errors }
   }
 }: SearchConfigurationProps) {
@@ -68,6 +70,21 @@ function SearchConfiguration({
         name="deliveryDateEnd"
         render={DatepickerWithClearButton}
         label="Delivered before"
+      />
+
+      <SelectFormField {...register('status')} label="Ad status" errors={errors}>
+        {adStatusList.map((status) => (
+          <option key={status} value={status}>
+            {status}
+          </option>
+        ))}
+      </SelectFormField>
+
+      <TextInputFormField
+        {...register('maxResults')}
+        type="number"
+        label="Maximum results"
+        errors={errors}
       />
     </div>
   );

@@ -25,7 +25,7 @@ import type {
 import { Controller } from 'react-hook-form';
 import type { DeepPartial } from 'ts-essentials';
 import { get, isFunction } from 'lodash-es';
-import { FieldPath } from 'react-hook-form/dist/types';
+import type { FieldPath } from 'react-hook-form/dist/types';
 
 type FormFieldProps<T extends SelectProps | TextInputProps> = T & FormFrameProps;
 

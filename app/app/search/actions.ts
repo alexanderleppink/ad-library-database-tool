@@ -6,6 +6,7 @@ import { mutable } from '@/utils/typeUtils';
 
 import type { QueryResult, ResultField } from '@/app/app/(ad-query)/adQuery.types';
 import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
+import { queryAllPages } from '@/app/app/(ad-query)/adQuery.helper';
 
 const fields = mutable([
   'id',
@@ -15,7 +16,7 @@ const fields = mutable([
   'eu_total_reach'
 ] as const satisfies ResultField[]);
 
-export async function searchAds(
+async function _searchAds(
   searchConfig: SearchConfig
 ): Promise<QueryResult<(typeof fields)[number]>> {
   const queryParams = new URLSearchParams({
@@ -32,6 +33,8 @@ export async function searchAds(
     requestOptions
   ).then((response) => response.json());
 }
+
+export const searchAds = queryAllPages(_searchAds);
 
 function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {
   return {

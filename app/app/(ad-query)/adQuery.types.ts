@@ -1,4 +1,4 @@
-interface QueryResultData {
+export interface QueryResultData {
   id: string;
   ad_creative_link_captions: string;
   ad_delivery_start_time: string;

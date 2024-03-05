@@ -41,10 +41,11 @@ export default function Login({ searchParams }: { searchParams: { message: strin
     });
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user');
+      console.error('Error signing up:', error);
+      return redirect('/login?message=Could not sign up');
     }
 
-    return redirect('/login?message=Check email to continue sign in process');
+    return redirect('/app');
   };
 
   return (

@@ -53,7 +53,7 @@ function SearchConfiguration({
             onChange={onChange}
           />
         )}
-        label="Languages"
+        label="Countries"
       />
 
       <FormFieldController

@@ -9,17 +9,14 @@ export type SearchResultData = Pick<
 >;
 
 function SearchResultItem({ queryResultData }: { queryResultData: SearchResultData }) {
+  const domain = queryResultData.ad_creative_link_captions[0].replace(/https?:\/\//, '');
   return (
     <Card>
       <div className="flex flex-col gap-1">
         <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis">
-          {queryResultData.ad_creative_link_captions ? (
-            <Link
-              target="_blank"
-              rel="noreferrer"
-              href={`https://${queryResultData.ad_creative_link_captions}`}
-            >
-              {queryResultData.ad_creative_link_captions}
+          {domain ? (
+            <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
+              {domain}
             </Link>
           ) : (
             <span>No website linked</span>

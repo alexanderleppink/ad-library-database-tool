@@ -15,7 +15,10 @@ function SearchResults({
   isLoading?: boolean;
 }) {
   const filteredResults = useMemo(
-    () => queryResultData?.filter((result) => result.eu_total_reach >= reachThreshold),
+    () =>
+      queryResultData
+        ?.filter((result) => result.eu_total_reach >= reachThreshold)
+        .filter(({ ad_creative_link_captions }) => ad_creative_link_captions.length),
     [queryResultData]
   );
 

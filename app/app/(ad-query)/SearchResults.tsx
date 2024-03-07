@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
-import SearchResultItem from '@/app/app/(ad-query)/SearchResultItem';
 import { Alert, Spinner } from 'flowbite-react';
+import SearchResultsTable from '@/app/app/(ad-query)/SearchResultsTable';
 
 const reachThreshold = 25000;
 
@@ -54,12 +54,8 @@ function SearchResults({
         <b>{queryResultData.length}</b> before filtering)
       </div>
 
-      {!!filteredResults?.length ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
-          {filteredResults?.map((result, index) => (
-            <SearchResultItem key={index} queryResultData={result} />
-          ))}
-        </div>
+      {!!filteredResults.length ? (
+        <SearchResultsTable searchResults={filteredResults} />
       ) : (
         <div className="flex justify-center text-center p-4">No results found</div>
       )}

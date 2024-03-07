@@ -4,6 +4,7 @@ import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import Link from 'next/link';
 import SortHeadCell from '@/components/SortHeadCell';
 import { useSortColumns } from '@/hooks/useSortColumns';
+import { format } from 'date-fns';
 
 interface SearchTableRow extends SearchResultData {
   domain: string | undefined;
@@ -38,15 +39,13 @@ function SearchResultsTable({ searchResults }: SearchResultsTableProps) {
 }
 
 function TableRow({
-  rowData: { ad_creative_link_captions, ad_delivery_start_time, eu_total_reach, ad_snapshot_url }
+  rowData: { ad_delivery_start_time, eu_total_reach, ad_snapshot_url, domain }
 }: {
-  rowData: SearchResultData;
+  rowData: SearchTableRow;
 }) {
-  const domain = ad_creative_link_captions[0].replace(/https?:\/\//, '');
   return (
     <Table.Row>
       <Table.Cell>
-        {' '}
         {domain ? (
           <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
             {domain}
@@ -55,7 +54,7 @@ function TableRow({
           <span>No website linked</span>
         )}
       </Table.Cell>
-      <Table.Cell>{ad_delivery_start_time}</Table.Cell>
+      <Table.Cell>{format(ad_delivery_start_time, 'MMM dd, yyyy')}</Table.Cell>
       <Table.Cell className="font-semibold">{eu_total_reach}</Table.Cell>
       <Table.Cell>
         <Link

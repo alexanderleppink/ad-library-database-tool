@@ -9,7 +9,7 @@ export type SearchResultData = Pick<
 >;
 
 function SearchResultItem({ queryResultData }: { queryResultData: SearchResultData }) {
-  const domain = queryResultData.ad_creative_link_captions[0].replace(/https?:\/\//, '');
+  const domain = '';
   return (
     <Card>
       <div className="flex flex-col gap-1">

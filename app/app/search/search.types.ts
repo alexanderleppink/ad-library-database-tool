@@ -13,6 +13,7 @@ export const SearchConfigSchema = z.object({
   countries: z.array(z.enum(ensureMinOneItem(mutable(countryList)))).min(1),
   deliveryDateStart: z.date().nullable(),
   deliveryDateEnd: z.date().nullable(),
+  checkOnlyStartDate: z.boolean().optional(),
   maxResults: z.number().optional()
 });
 
@@ -26,6 +27,7 @@ export function createDefaultSearchConfig(): SearchConfig {
     countries: ['NL'],
     deliveryDateStart: null,
     deliveryDateEnd: null,
-    maxResults: 10000
+    maxResults: 10000,
+    checkOnlyStartDate: false
   };
 }

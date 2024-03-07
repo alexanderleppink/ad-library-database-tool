@@ -11,12 +11,14 @@ const fields = mutable([
   'ad_creative_link_captions',
   'ad_delivery_start_time',
   'ad_snapshot_url',
-  'eu_total_reach'
+  'eu_total_reach',
+  'id'
 ] as const satisfies ResultField[]);
 
-export async function searchAds(
-  searchConfig: SearchConfig
-): Promise<QueryResult<(typeof fields)[number]>> {
+export type SearchQueryResults = QueryResult<(typeof fields)[number]>;
+export type SearchQueryResultData = SearchQueryResults['data'][number];
+
+export async function searchAds(searchConfig: SearchConfig): Promise<SearchQueryResults> {
   const queryParams = new URLSearchParams({
     ...buildSearchQuery(searchConfig),
     access_token: process.env.META_USER_ACCESS_TOKEN

@@ -4,7 +4,7 @@ import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
 import { adStatusList } from '@/app/app/search/search.types';
 import { countryList, languagesList } from '@/app/app/search/search.types';
-import { Button, Datepicker } from 'flowbite-react';
+import { Button, Checkbox, Datepicker } from 'flowbite-react';
 import { format } from 'date-fns';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
@@ -21,7 +21,7 @@ function SearchConfiguration({
   }
 }: SearchConfigurationProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 border rounded p-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 border rounded p-4">
       <FormFieldController
         control={control}
         errors={errors}
@@ -64,13 +64,19 @@ function SearchConfiguration({
         label="Delivered after"
       />
 
-      <FormFieldController
-        control={control}
-        errors={errors}
-        name="deliveryDateEnd"
-        render={DatepickerWithClearButton}
-        label="Delivered before"
-      />
+      <div className="flex flex-col">
+        <FormFieldController
+          control={control}
+          errors={errors}
+          name="deliveryDateEnd"
+          render={DatepickerWithClearButton}
+          label="Delivered before"
+        />
+        <div className="flex gap-2 items-center self-end">
+          <Checkbox {...register('checkOnlyStartDate')} />
+          <label className="text-sm">Check only start date</label>
+        </div>
+      </div>
 
       <SelectFormField {...register('status')} label="Ad status" errors={errors}>
         {adStatusList.map((status) => (

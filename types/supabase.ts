@@ -3,7 +3,55 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never;
+      users: {
+        Row: {
+          created_at: string | null;
+          id: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'users_id_fkey';
+            columns: ['id'];
+            isOneToOne: true;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      viewed_ads: {
+        Row: {
+          created_at: string;
+          id: string;
+          user: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          user?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          user?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'public_viewed_ads_user_fkey';
+            columns: ['user'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;

@@ -5,7 +5,11 @@ import Link from 'next/link';
 
 export type SearchResultData = Pick<
   QueryResultData,
-  'ad_creative_link_captions' | 'ad_delivery_start_time' | 'eu_total_reach' | 'ad_snapshot_url'
+  | 'ad_creative_link_captions'
+  | 'ad_delivery_start_time'
+  | 'eu_total_reach'
+  | 'ad_snapshot_url'
+  | 'id'
 >;
 
 function SearchResultItem({ queryResultData }: { queryResultData: SearchResultData }) {

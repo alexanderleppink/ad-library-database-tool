@@ -5,12 +5,17 @@ import Link from 'next/link';
 import SortHeadCell from '@/components/SortHeadCell';
 import { useSortColumns } from '@/hooks/useSortColumns';
 import { format } from 'date-fns';
+import type { Database } from '@/types/supabase';
+import { useUser } from '@supabase/auth-helpers-react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
+import clsx from 'clsx';
 
-interface SearchTableRow extends SearchResultData {
+export interface SearchTableRow extends SearchResultData {
   domain: string | undefined;
 }
 
-interface SearchResultsTableProps {
+export interface SearchResultsTableProps {
   searchResults: SearchTableRow[];
 }
 
@@ -20,6 +25,15 @@ function SearchResultsTable({ searchResults }: SearchResultsTableProps) {
     reach: (item) => item.eu_total_reach,
     startDate: (item) => item.ad_delivery_start_time
   });
+
+  const { viewedAds, addNewViewedAd } = useViewedAds(searchResults);
+
+  const user = useUser();
+  const supabase = createClientComponentClient<Database>();
+  const handleView = async (id: string) => {
+    addNewViewedAd(id);
+    await supabase.from('viewed_ads').insert({ user: user?.id, id });
+  };
 
   return (
     <Table>
@@ -31,7 +45,7 @@ function SearchResultsTable({ searchResults }: SearchResultsTableProps) {
       </Table.Head>
       <Table.Body className="divide-y">
         {sortedArray.map((result, index) => (
-          <TableRow key={index} rowData={result} />
+          <TableRow viewedAdsSet={viewedAds} key={index} rowData={result} onView={handleView} />
         ))}
       </Table.Body>
     </Table>
@@ -39,12 +53,20 @@ function SearchResultsTable({ searchResults }: SearchResultsTableProps) {
 }
 
 function TableRow({
-  rowData: { ad_delivery_start_time, eu_total_reach, ad_snapshot_url, domain }
+  viewedAdsSet,
+  onView,
+  rowData: { ad_delivery_start_time, eu_total_reach, ad_snapshot_url, domain, id }
 }: {
+  viewedAdsSet: Set<string>;
+  onView: (id: string) => unknown;
   rowData: SearchTableRow;
 }) {
   return (
-    <Table.Row>
+    <Table.Row
+      className={clsx({
+        'bg-gray-200': viewedAdsSet.has(id)
+      })}
+    >
       <Table.Cell>
         {domain ? (
           <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
@@ -58,6 +80,7 @@ function TableRow({
       <Table.Cell className="font-semibold">{eu_total_reach}</Table.Cell>
       <Table.Cell>
         <Link
+          onMouseDown={() => onView(id)}
           href={ad_snapshot_url}
           target="_blank"
           rel="noreferrer"

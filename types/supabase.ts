@@ -34,7 +34,7 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
-          id?: string;
+          id: string;
           user?: string | null;
         };
         Update: {
@@ -57,7 +57,12 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      ad_id_in: {
+        Args: {
+          ids: string[];
+        };
+        Returns: string[];
+      };
     };
     Enums: {
       [_ in never]: never;

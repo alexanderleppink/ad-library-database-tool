@@ -9,13 +9,10 @@ export function useViewedAds(searchResults: SearchResultData[]) {
   const supabase = createClientComponentClient<Database>();
   const { data: supabaseReponse, ...response } = useSWR(
     ['viewedAds', ...adIds],
-    async () => await supabase.from('viewed_ads').select('id').in('id', adIds).limit(100000)
+    async () => await supabase.rpc('ad_id_in', { ids: adIds }).limit(100000)
   );
 
-  const oldViewedAdsSet = useMemo(
-    () => new Set(supabaseReponse?.data?.map((ad) => ad.id) || []),
-    [supabaseReponse]
-  );
+  const oldViewedAdsSet = useMemo(() => new Set(supabaseReponse?.data || []), [supabaseReponse]);
   const [newViewedAdsSet, setNewViewedAdsSet] = useState(new Set<string>());
 
   const combinedViewedAdsSet = useMemo(

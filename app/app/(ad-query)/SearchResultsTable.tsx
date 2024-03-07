@@ -2,22 +2,34 @@ import { Table } from 'flowbite-react';
 import React from 'react';
 import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import Link from 'next/link';
+import SortHeadCell from '@/components/SortHeadCell';
+import { useSortColumns } from '@/hooks/useSortColumns';
+
+interface SearchTableRow extends SearchResultData {
+  domain: string | undefined;
+}
 
 interface SearchResultsTableProps {
-  searchResults: SearchResultData[];
+  searchResults: SearchTableRow[];
 }
 
 function SearchResultsTable({ searchResults }: SearchResultsTableProps) {
+  const { sortedArray, handlers } = useSortColumns(searchResults, {
+    domain: (item) => item.domain || '',
+    reach: (item) => item.eu_total_reach,
+    startDate: (item) => item.ad_delivery_start_time
+  });
+
   return (
-    <Table striped>
+    <Table>
       <Table.Head>
-        <Table.HeadCell>Domain</Table.HeadCell>
-        <Table.HeadCell>Start Date</Table.HeadCell>
-        <Table.HeadCell>Reach</Table.HeadCell>
+        <SortHeadCell {...handlers.domain}>Domain</SortHeadCell>
+        <SortHeadCell {...handlers.startDate}>Start Date</SortHeadCell>
+        <SortHeadCell {...handlers.reach}>Reach</SortHeadCell>
         <Table.HeadCell>Ad Snapshot</Table.HeadCell>
       </Table.Head>
       <Table.Body className="divide-y">
-        {searchResults.map((result, index) => (
+        {sortedArray.map((result, index) => (
           <TableRow key={index} rowData={result} />
         ))}
       </Table.Body>

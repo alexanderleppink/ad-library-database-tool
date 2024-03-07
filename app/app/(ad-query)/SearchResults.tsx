@@ -18,7 +18,11 @@ function SearchResults({
     () =>
       queryResultData
         ?.filter((result) => result.eu_total_reach >= reachThreshold)
-        .filter(({ ad_creative_link_captions }) => ad_creative_link_captions.length),
+        .filter(({ ad_creative_link_captions }) => ad_creative_link_captions.length)
+        .map((result) => ({
+          ...result,
+          domain: result.ad_creative_link_captions[0].replace(/https?:\/\//, '')
+        })),
     [queryResultData]
   );
 

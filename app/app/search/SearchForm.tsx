@@ -36,14 +36,12 @@ function filterStartDate(
   searchResults: SearchQueryResultData[],
   { deliveryDateStart, deliveryDateEnd }: SearchConfig
 ) {
-  return searchResults.filter((result) => {
-    console.log(result.ad_delivery_start_time, deliveryDateStart, deliveryDateEnd);
-    return (
+  return searchResults.filter(
+    (result) =>
       (!deliveryDateStart ||
         startOfDay(new Date(result.ad_delivery_start_time)) >= deliveryDateStart) &&
       (!deliveryDateEnd || startOfDay(new Date(result.ad_delivery_start_time)) <= deliveryDateEnd)
-    );
-  });
+  );
 }
 
 function SearchForm({ className }: SearchFormProps) {

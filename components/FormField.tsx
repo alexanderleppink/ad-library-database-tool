@@ -30,7 +30,7 @@ import type { FieldPath } from 'react-hook-form/dist/types';
 type FormFieldProps<T extends SelectProps | TextInputProps> = T & FormFrameProps;
 
 type FormFrameProps = {
-  label: string;
+  label: ReactNode;
   required?: boolean;
   errors: FieldErrors<any>;
   name: string;

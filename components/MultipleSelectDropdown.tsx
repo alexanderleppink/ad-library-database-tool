@@ -5,12 +5,14 @@ interface MultipleSelectDropdownProps<T extends string | number> {
   items: { value: T; label: string }[];
   value: T[];
   onChange: (value: T[]) => unknown;
+  disabled?: boolean;
 }
 
 function MultipleSelectDropdown<T extends string | number>({
   items,
   onChange,
-  value
+  value,
+  disabled
 }: MultipleSelectDropdownProps<T>) {
   const selectedSet = useMemo(() => new Set(value), [value]);
 
@@ -24,6 +26,7 @@ function MultipleSelectDropdown<T extends string | number>({
 
   return (
     <Dropdown
+      disabled={disabled}
       renderTrigger={() => <TextInput readOnly value={value.join(', ')} />}
       label=""
       dismissOnClick={false}

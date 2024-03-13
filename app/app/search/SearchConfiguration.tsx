@@ -17,9 +17,11 @@ function SearchConfiguration({
   formObject: {
     control,
     register,
+    watch,
     formState: { errors }
   }
 }: SearchConfigurationProps) {
+  const allLanguages = watch('allLanguages');
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 border rounded p-4">
       <FormFieldController
@@ -28,6 +30,7 @@ function SearchConfiguration({
         name="languages"
         render={({ field: { value, onChange } }) => (
           <MultipleSelectDropdown
+            disabled={!!allLanguages}
             value={value || []}
             items={languagesList.map((lang) => ({
               value: lang,
@@ -36,7 +39,16 @@ function SearchConfiguration({
             onChange={onChange}
           />
         )}
-        label="Languages"
+        label={
+          <div className="flex justify-between items-center">
+            <span>Languages</span>
+
+            <div className="flex space-x-1 items-center">
+              <span>All languages</span>
+              <Checkbox {...register('allLanguages')} />
+            </div>
+          </div>
+        }
       />
 
       <FormFieldController

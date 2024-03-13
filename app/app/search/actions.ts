@@ -38,7 +38,11 @@ function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {
   return {
     search_terms: searchConfig.searchTerms,
     ad_reached_countries: JSON.stringify(searchConfig.countries),
-    languages: JSON.stringify(searchConfig.languages),
+    ...(!searchConfig.allLanguages
+      ? {
+          languages: JSON.stringify(searchConfig.languages)
+        }
+      : {}),
     ad_active_status: searchConfig.status,
     fields: fields.join(', '),
     limit:

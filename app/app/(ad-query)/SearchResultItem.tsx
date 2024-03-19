@@ -1,3 +1,7 @@
+/*
+Not used
+ */
+
 import React from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { Card } from 'flowbite-react';
@@ -36,14 +40,14 @@ function SearchResultItem({ queryResultData }: { queryResultData: SearchResultDa
         Reach: <b>{queryResultData.eu_total_reach}</b>
       </div>
 
-      <Link
+      <a
         href={queryResultData.ad_snapshot_url}
         target="_blank"
         rel="noreferrer"
         className="font-medium text-blue-600 hover:underline"
       >
         Open ad snapshot
-      </Link>
+      </a>
     </Card>
   );
 }

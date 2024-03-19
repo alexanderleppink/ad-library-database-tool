@@ -69,9 +69,9 @@ function TableRow({
     >
       <Table.Cell>
         {domain ? (
-          <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
+          <a target="_blank" rel="noreferrer" href={`https://${domain}`}>
             {domain}
-          </Link>
+          </a>
         ) : (
           <span>No website linked</span>
         )}
@@ -79,15 +79,17 @@ function TableRow({
       <Table.Cell>{format(ad_delivery_start_time, 'MMM dd, yyyy')}</Table.Cell>
       <Table.Cell className="font-semibold">{eu_total_reach}</Table.Cell>
       <Table.Cell>
-        <Link
-          onMouseDown={() => onView(id)}
-          href={ad_snapshot_url}
-          target="_blank"
-          rel="noreferrer"
-          className="font-medium text-blue-600 hover:underline"
-        >
-          Open ad snapshot
-        </Link>
+        {!!ad_snapshot_url && (
+          <a
+            onMouseDown={() => onView(id)}
+            href={ad_snapshot_url}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-blue-600 hover:underline"
+          >
+            Open ad snapshot
+          </a>
+        )}
       </Table.Cell>
     </Table.Row>
   );

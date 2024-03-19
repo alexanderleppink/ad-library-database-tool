@@ -1,7 +1,6 @@
 import { Table } from 'flowbite-react';
 import React from 'react';
 import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
-import Link from 'next/link';
 import SortHeadCell from '@/components/SortHeadCell';
 import { useSortColumns } from '@/hooks/useSortColumns';
 import { format } from 'date-fns';

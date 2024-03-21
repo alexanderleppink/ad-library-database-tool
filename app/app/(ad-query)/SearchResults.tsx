@@ -60,12 +60,14 @@ function SearchResults({
           <b>{queryResultData.length}</b> before filtering)
         </div>
 
-        {viewedAdsData.isLoading && (
+        {viewedAdsData.isLoading ? (
           <div className="flex items-center space-x-2">
             <Spinner aria-label="loading" />
             <span>Loading viewed ads...</span>
           </div>
-        )}
+        ) : viewedAdsData.error ? (
+          <Alert color="failure">Failed to load viewed ads!</Alert>
+        ) : null}
       </div>
 
       {!!filteredResults.length ? (

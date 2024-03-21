@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import { Alert, Spinner } from 'flowbite-react';
 import SearchResultsTable from '@/app/app/(ad-query)/SearchResultsTable';
+import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 
 const reachThreshold = 25000;
 
@@ -23,6 +24,8 @@ function SearchResults({
         domain: result.ad_creative_link_captions?.[0].replace(/https?:\/\//, '') || ''
       }));
   }, [queryResultData]);
+
+  const viewedAdsData = useViewedAds(filteredResults || []);
 
   if (isLoading) {
     return (
@@ -51,13 +54,22 @@ function SearchResults({
     <div className="w-full flex flex-col gap-4">
       <h3 className="text-xl font-semibold my-2">Search results</h3>
 
-      <div>
-        Found <span className="font-bold text-green-700">{filteredResults.length}</span> results (
-        <b>{queryResultData.length}</b> before filtering)
+      <div className="flex items-center justify-between">
+        <div>
+          Found <span className="font-bold text-green-700">{filteredResults.length}</span> results (
+          <b>{queryResultData.length}</b> before filtering)
+        </div>
+
+        {viewedAdsData.isLoading && (
+          <div className="flex items-center space-x-2">
+            <Spinner aria-label="loading" />
+            <span>Loading viewed ads...</span>
+          </div>
+        )}
       </div>
 
       {!!filteredResults.length ? (
-        <SearchResultsTable searchResults={filteredResults} />
+        <SearchResultsTable searchResults={filteredResults} viewedAdsData={viewedAdsData} />
       ) : (
         <div className="flex justify-center text-center p-4">No results found</div>
       )}

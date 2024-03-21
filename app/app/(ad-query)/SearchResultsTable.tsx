@@ -15,17 +15,19 @@ export interface SearchTableRow extends SearchResultData {
 }
 
 export interface SearchResultsTableProps {
+  viewedAdsData: ReturnType<typeof useViewedAds>;
   searchResults: SearchTableRow[];
 }
 
-function SearchResultsTable({ searchResults }: SearchResultsTableProps) {
+function SearchResultsTable({
+  searchResults,
+  viewedAdsData: { viewedAds, addNewViewedAd }
+}: SearchResultsTableProps) {
   const { sortedArray, handlers } = useSortColumns(searchResults, {
     domain: (item) => item.domain || '',
     reach: (item) => item.eu_total_reach,
     startDate: (item) => item.ad_delivery_start_time
   });
-
-  const { viewedAds, addNewViewedAd } = useViewedAds(searchResults);
 
   const user = useUser();
   const supabase = createClientComponentClient<Database>();

@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import type { Database } from '@/types/supabase';
 import { useUser } from '@supabase/auth-helpers-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
+import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import clsx from 'clsx';
 
 export interface SearchTableRow extends SearchResultData {

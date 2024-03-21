@@ -1,0 +1,84 @@
+video:
+
+https://www.facebook.com/ads/archive/render_ad/?id=767375548685839&access_token=EAAOwVJtfsIABO7AjXm7XNCRhCquCvMIrNQIEAWgKG2AoiPZAifanjCKsIEUNh6C3qMFzJ6hjWbxWRwZAwPZBoGxBqgL39ckMJZAq2RMx4y8UKJ9R6DSyIT2vWGstgHZAMSnfJVQFMnXO5UHjfOu09np1teZAS4HbgvPO0yBditudYWDHP3RMRErR6hWse5M5vJ31aZANdrZA
+
+"snapshot": {
+                                    "ad_creative_id": "120208498554480159",
+                                    "cards": [{
+                                        "body": "Bei Dir als Inhaber im Handwerk bricht st\u00e4ndig Chaos im Betrieb aus? Obwohl Du st\u00e4ndig Auftr\u00e4ge ablehnst, steigt das K\u00fcndigungsrisiko massiv und \u00dcberstunden sind an der Tagesordnung.\n\nDoch warum ist das so?\n\nIch verrate es Dir:\n\nDeine Mitarbeiter sind durch die vollen Auftragsb\u00fccher \u00fcberlastet, wodurch sich bereits die gelben Scheine auf Deinem Tisch stapeln.\n\nKlar, das geht eine Zeit lang gut - aber auf Dauer? Auf keinen Fall!\n\n... und hier beginnt das wahre Dilemma: Die Mitarbeiter noch weiter \u00fcberlasten und damit K\u00fcndigungen riskieren oder treue Stammkunden durch lange Wartezeiten oder Pfusch ver\u00e4rgern?\n\nBeides sind keine Optionen, denn sonst ist wirklich \"Land unter\".\n\nKurz gesagt: Die Abw\u00e4rtsspirale beginnt.\n\nAber es gibt eine einfache L\u00f6sung, wie Du planbar mehr Manpower gewinnst - ganz ohne abzuwerben. Im Gegenteil, die Mitarbeiter kommen aktiv auf Dich zu und bewerben sich bei Dir - \u00e4hnlich wie es in den \"guten alten Zeiten\" noch der Fall war.\n\nIch nenne das ganze die Candidate Flow Methode.\n\nUnd diese sorgt daf\u00fcr, dass: \n\n- Du keine faulen \u00c4pfel mehr in Deinem Betrieb dulden musst\n\n- Du keine Gespr\u00e4che mehr mit unqualifizierten Bewerbern f\u00fchren musst\n\n- Du keine unrealistisch hohen L\u00f6hne zahlen musst, weil sich zu 99\u0025 nur die Bewerber melden, welche pr\u00e4zise zu Deinem Job-Angebot passen (wie genau das funktioniert erf\u00e4hrst Du, wenn Du auf den Link klickst)\n\n\u2192 https:\/\/candidate-flow.de\n\nUnd genau diese Methode nutzen erfolgreiche Marken wie Vaillant, WISAG, Spie, GEZE, Wolf, Enpal und \u00fcber 2.500 weitere Betriebe, welche ihre Konkurrenz um 2-4 Jahre \u00fcberholt haben.\n\nWenn Du erfahren willst, was heutzutage m\u00f6glich ist und einen genaueren Einblick auf die Candidate Flow Methode haben willst, dann klicke auf den Link, um auf der n\u00e4chsten Seite mehr \u00fcber unseren Prozess zu erfahren.\n\n\u2192 https:\/\/candidate-flow.de",
+                                        "caption": null,
+                                        "cta_text": "Learn More",
+                                        "cta_type": "LEARN_MORE",
+                                        "title": null,
+                                        "link_description": null,
+                                        "link_url": "https:\/\/candidate-flow.de\/",
+                                        "original_image_url": null,
+                                        "resized_image_url": null,
+                                        "watermarked_resized_image_url": null,
+                                        "image_crops": null,
+                                        "video_hd_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t42.1790-2\/433231014_767375618685832_9098223449154304293_n.?_nc_cat=111&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=hIBJf9Xkd-MAX8XGbxz&_nc_ht=scontent-muc2-1.xx&oh=00_AfA7dwOkoXcY7bzGM3UNXJtbc3G5XyB_O9zpE05dVwb7UQ&oe=6600A05B",
+                                        "video_sd_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t42.1790-2\/421651962_1057112828848830_8663304521810783920_n.mp4?_nc_cat=105&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=1Kvhp5mh4qQAX98c3PI&_nc_ht=scontent-muc2-1.xx&oh=00_AfA_uFC2PuxkWZx6PYvKbJnhx02GoR7dxuf6Xu1vQjLtQw&oe=6601BFCE",
+                                        "video_preview_image_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t39.35426-6\/432423457_2530581393782732_7971749457951065413_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=p1N24ZVb8sIAX94XeBc&_nc_ht=scontent-muc2-1.xx&oh=00_AfCnc6KRaXH73DsVOy1Jns7lhmTicFu0RIHXAqKQpO-zxQ&oe=6601153A",
+                                        "watermarked_video_hd_url": "",
+                                        "watermarked_video_sd_url": ""
+                                    }, {
+
+
+                                    }
+
+single image:
+
+https://www.facebook.com/ads/archive/render_ad/?id=1586554545435040&access_token=EAAOwVJtfsIABO7AjXm7XNCRhCquCvMIrNQIEAWgKG2AoiPZAifanjCKsIEUNh6C3qMFzJ6hjWbxWRwZAwPZBoGxBqgL39ckMJZAq2RMx4y8UKJ9R6DSyIT2vWGstgHZAMSnfJVQFMnXO5UHjfOu09np1teZAS4HbgvPO0yBditudYWDHP3RMRErR6hWse5M5vJ31aZANdrZA
+
+"snapshot": {
+                                    "ad_creative_id": "120207916655160092",
+                                    "cards": [],
+                                    "body_translations": {},
+                                    "byline": null,
+                                    "caption": null,
+                                    "cta_text": "Contact us",
+                                    "dynamic_item_flags": {},
+                                    "dynamic_versions": null,
+                                    "edited_snapshots": [],
+                                    "effective_authorization_category": "NONE",
+                                    "event": [],
+                                    "extra_images": [],
+                                    "extra_links": [],
+                                    "extra_texts": [],
+                                    "extra_videos": [],
+                                    "instagram_shopping_products": [],
+                                    "display_format": "image",
+                                    "title": "Einzigartige \"Fassbar, Whiskyfass, Bierfass, Minibar\"aus Holz mit Beleuchtung.",
+                                    "link_description": null,
+                                    "link_url": "https:\/\/facebook.com\/marketplace\/item\/1628579547885764\/",
+                                    "page_welcome_message": null,
+                                    "images": [{
+                                        "original_image_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t39.35426-6\/431959711_2203525206653720_6923810529720186327_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=2hpBXOijccoAX-JRDzQ&_nc_ht=scontent-muc2-1.xx&oh=00_AfASCRKMBJZ5Bg2d9Hdhw5fyCX67s4nNWeznW-FhUsnJig&oe=66014A82",
+                                        "resized_image_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t39.35426-6\/431964224_342609521505970_418883550829427188_n.jpg?stp=dst-jpg_s600x600&_nc_cat=104&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=hy-2JWCp5SoAX_j1KnL&_nc_ht=scontent-muc2-1.xx&oh=00_AfCl064GE_BAM41xmNVd33IGomw6BRAEdXwc8onYOSUt6A&oe=66011125",
+                                        "watermarked_resized_image_url": "",
+                                        "image_crops": {}
+                                    }],
+
+Cards images:
+
+https://www.facebook.com/ads/archive/render_ad/?id=7847061548637812&access_token=EAAOwVJtfsIABO7AjXm7XNCRhCquCvMIrNQIEAWgKG2AoiPZAifanjCKsIEUNh6C3qMFzJ6hjWbxWRwZAwPZBoGxBqgL39ckMJZAq2RMx4y8UKJ9R6DSyIT2vWGstgHZAMSnfJVQFMnXO5UHjfOu09np1teZAS4HbgvPO0yBditudYWDHP3RMRErR6hWse5M5vJ31aZANdrZA
+
+"snapshot": {
+                                    "ad_creative_id": "120206221313140109",
+                                    "cards": [{
+                                        "original_image_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t39.35426-6\/432674474_430393892893434_483357917536824104_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=4kKCijrl93AAX96bhxy&_nc_oc=AdiaVn8h-B_XDGmkLblPLb2Z4nY0kqh1NCoZWDP0bmWEoOJ7KBfxTl5ez2-11-LjFfU&_nc_ht=scontent-muc2-1.xx&oh=00_AfBODuIOosnCPdk9806q3Y76ljwbg2_wuB50V1ccPdJgvg&oe=660222B6",
+                                        "resized_image_url": "https:\/\/scontent-muc2-1.xx.fbcdn.net\/v\/t39.35426-6\/432580527_785767040136486_8696143359553296013_n.jpg?stp=dst-jpg_s600x600&_nc_cat=106&ccb=1-7&_nc_sid=c53f8f&_nc_ohc=eq8LYXIBQUsAX9zOtwY&_nc_ht=scontent-muc2-1.xx&oh=00_AfA7y5EwnWDhVD7x37oXral1ke3gMd8zuXA_8uz4Wnz_jQ&oe=6600F5F0",
+                                        "watermarked_resized_image_url": "",
+                                        "image_crops": {},
+                                        "body": " ",
+                                        "caption": "ostsee-zeitung.de",
+                                        "cta_type": "LEARN_MORE",
+                                        "cta_text": "Learn More",
+                                        "title": " ",
+                                        "link_description": " ",
+                                        "link_url": "https:\/\/www.ostsee-zeitung.de\/lokales\/vorpommern-greifswald\/usedom\/wolgaster-bier-hat-nun-auch-fans-in-japan-praesentation-in-stehkneipe-PSC2AX3TJNBRBHN7LSUIKM7KJA.html"
+                                    }, { }
+
+Cluster requests into batch of 20 requests to edge function
+In frontend execute them in parallel --> for every 20 open an edge function
+Result is a map of ad id to ad image url

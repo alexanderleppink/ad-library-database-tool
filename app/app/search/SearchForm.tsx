@@ -17,6 +17,7 @@ import useSWRMutation from 'swr/mutation';
 import clsx from 'clsx';
 import { queryAllPages } from '@/app/app/(ad-query)/adQuery.helper';
 import { startOfDay } from 'date-fns';
+import { ExcludedDomainsProvider } from '@/contexts/ExcludedDomainsContext';
 
 interface SearchFormProps {
   className?: string;
@@ -53,17 +54,19 @@ function SearchForm({ className }: SearchFormProps) {
   const { data: searchResults, error, trigger, isMutating } = useSearch();
 
   return (
-    <div className={clsx(className, 'flex flex-col gap-4')}>
-      <div className="max-w-2xl mx-auto gap-2 flex flex-col">
-        <SearchConfiguration formObject={formObject} />
-        <Search onSubmit={trigger} formObject={formObject} />
+    <ExcludedDomainsProvider>
+      <div className={clsx(className, 'flex flex-col gap-4')}>
+        <div className="max-w-2xl mx-auto gap-2 flex flex-col">
+          <SearchConfiguration formObject={formObject} />
+          <Search onSubmit={trigger} formObject={formObject} />
+        </div>
+        <SearchResults
+          error={error?.message}
+          queryResultData={searchResults}
+          isLoading={isMutating}
+        />
       </div>
-      <SearchResults
-        error={error?.message}
-        queryResultData={searchResults}
-        isLoading={isMutating}
-      />
-    </div>
+    </ExcludedDomainsProvider>
   );
 }
 

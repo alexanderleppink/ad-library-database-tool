@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import clsx from 'clsx';
 import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 import { FetchMediaClusterItem, useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
-import { EyeIcon, EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import { EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 
 export interface SearchCardItemData extends QueryResultData {
@@ -24,7 +24,7 @@ function SearchResultCards({
   viewedAdsData: { viewedAds, addNewViewedAd }
 }: SearchResultsCardsProps) {
   const { mediaDataMap, fetchMedia } = useFetchMedia();
-  const { freshlyExcludedDomains } = useExcludedDomains();
+  const { freshlyExcludedDomains, addExcludedDomain, removeExcludedDomain } = useExcludedDomains();
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
@@ -36,10 +36,13 @@ function SearchResultCards({
           onEnterView={fetchMedia}
         >
           <SearchResultItem
-            freshlyExcludedDomains={freshlyExcludedDomains}
-            mediaDataMap={mediaDataMap}
+            onDomainExclude={(id, exclude) =>
+              exclude ? addExcludedDomain(id) : removeExcludedDomain(id)
+            }
+            hasFreshlyExcludedDomain={!!result.domain && freshlyExcludedDomains.has(result.domain)}
+            mediaData={mediaDataMap?.get(result.id)}
             queryResultData={result}
-            viewedAdsSet={viewedAds}
+            isViewedAd={!!viewedAds?.has(result.id)}
             onView={addNewViewedAd}
           />
         </FetchMediaClusterItem>
@@ -50,73 +53,77 @@ function SearchResultCards({
 
 function _SearchResultItem({
   queryResultData: { domain, id, ad_snapshot_url, ad_delivery_start_time, eu_total_reach },
-  viewedAdsSet,
+  isViewedAd,
   onView,
-  mediaDataMap,
+  mediaData,
   onDomainExclude,
-  freshlyExcludedDomains
+  hasFreshlyExcludedDomain
 }: {
-  freshlyExcludedDomains: Set<string>;
+  hasFreshlyExcludedDomain: boolean;
   queryResultData: SearchCardItemData;
-  viewedAdsSet: Set<string>;
+  isViewedAd: boolean;
   onView?: (id: string) => unknown;
   onDomainExclude?: (id: string, exclude: boolean) => unknown;
-  mediaDataMap: Map<string, MediaData> | undefined;
+  mediaData: MediaData | undefined;
 }) {
   return (
-    <Card
-      renderImage={() => (
-        <div className="w-full h-48 shrink-0 flex justify-center items-center">
-          <CardMedia mediaData={mediaDataMap?.get(id)} />
+    <div className="relative">
+      {hasFreshlyExcludedDomain && domain && (
+        <div
+          className="cursor-pointer absolute inset-0 flex justify-center items-center z-10"
+          onClick={() => onDomainExclude?.(domain, false)}
+        >
+          <EyeSlashIcon className="w-20 h-20 text-gray-700" />
         </div>
       )}
-      className={clsx({
-        'bg-gray-200': viewedAdsSet.has(id)
-      })}
-    >
-      <div className="flex flex-col gap-1">
-        <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis flex gap-1">
-          {domain ? (
-            <>
-              <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
-                {domain}
-              </Link>
-              {freshlyExcludedDomains.has(domain) ? (
-                <EyeIcon
+      <Card
+        renderImage={() => (
+          <div className="w-full h-48 shrink-0 flex justify-center items-center">
+            <CardMedia mediaData={mediaData} />
+          </div>
+        )}
+        className={clsx({
+          'bg-gray-200': isViewedAd,
+          'opacity-40': hasFreshlyExcludedDomain
+        })}
+      >
+        <div className="flex flex-col gap-1">
+          <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis flex gap-2 items-center">
+            {domain ? (
+              <>
+                <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
+                  {domain}
+                </Link>
+                <EyeSlashIcon
                   className="w-5 h-5 text-gray-500 cursor-pointer"
                   onClick={() => onDomainExclude?.(domain, true)}
                 />
-              ) : (
-                <EyeSlashIcon
-                  className="w-5 h-5 text-gray-500 cursor-pointer"
-                  onClick={() => onDomainExclude?.(domain, false)}
-                />
-              )}
-            </>
-          ) : (
-            <span>No website linked</span>
-          )}
-        </h4>
+              </>
+            ) : (
+              <span>No website linked</span>
+            )}
+          </h4>
 
-        <div className="text-gray-500 text-sm">
-          Started: {format(ad_delivery_start_time, 'MMM dd, yyyy')}
+          <div className="text-gray-500 text-sm">
+            Started: {format(ad_delivery_start_time, 'MMM dd, yyyy')}
+          </div>
         </div>
-      </div>
 
-      <div className="font-medium">
-        Reach: <b>{eu_total_reach}</b>
-      </div>
+        <div className="font-medium">
+          Reach: <b>{eu_total_reach}</b>
+        </div>
 
-      <a
-        onMouseDown={() => onView?.(id)}
-        href={ad_snapshot_url}
-        target="_blank"
-        rel="noreferrer"
-        className="font-medium text-blue-600 hover:underline"
-      >
-        Open ad snapshot
-      </a>
-    </Card>
+        <a
+          onMouseDown={() => onView?.(id)}
+          href={ad_snapshot_url}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-blue-600 hover:underline"
+        >
+          Open ad snapshot
+        </a>
+      </Card>
+    </div>
   );
 }
 
@@ -162,4 +169,4 @@ function _CardMedia({ mediaData }: { mediaData: MediaData | undefined }) {
 
 const CardMedia = memo(_CardMedia);
 
-export default memo(SearchResultCards);
+export default SearchResultCards;

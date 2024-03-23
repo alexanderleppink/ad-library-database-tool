@@ -1,7 +1,7 @@
 import { fetchMediaData } from '@/app/app/(ad-query)/actions';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import type { PropsWithChildren } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import ContainerWithVisibilityObserver from '@/components/ContainerWithVisibilityObserver';
 
 export type MediaData = Awaited<ReturnType<typeof fetchMediaData>>[number];
@@ -19,22 +19,25 @@ export function useFetchMedia() {
 
   const currentFetching = useRef(new Set<string>([]));
 
-  const fetchMedia = async (cluster: QueryResultData[]) => {
-    const cleanedCluster = cluster.filter(
-      ({ id }) => !currentFetching.current.has(id) && !mediaDataMap.has(id)
-    );
+  const fetchMedia = useCallback(
+    async (cluster: QueryResultData[]) => {
+      const cleanedCluster = cluster.filter(
+        ({ id }) => !currentFetching.current.has(id) && !mediaDataMap.has(id)
+      );
 
-    if (!cleanedCluster.length) {
-      return;
-    }
+      if (!cleanedCluster.length) {
+        return;
+      }
 
-    cleanedCluster.forEach(({ id }) => currentFetching.current.add(id));
+      cleanedCluster.forEach(({ id }) => currentFetching.current.add(id));
 
-    const result = await fetchMediaData(cleanedCluster);
+      const result = await fetchMediaData(cleanedCluster);
 
-    setMediaData((prev) => [...prev, ...result]);
-    cleanedCluster.forEach(({ id }) => currentFetching.current.delete(id));
-  };
+      setMediaData((prev) => [...prev, ...result]);
+      cleanedCluster.forEach(({ id }) => currentFetching.current.delete(id));
+    },
+    [mediaDataMap]
+  );
 
   return {
     mediaDataMap,

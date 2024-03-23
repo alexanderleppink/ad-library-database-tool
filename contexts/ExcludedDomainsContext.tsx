@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { useContext } from 'react';
-import React, { createContext, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/supabase';
 import { useUser } from '@supabase/auth-helpers-react';
@@ -35,22 +34,31 @@ function useExcludedDomainsInternal() {
   );
 
   const excludedDomains = useMemo(() => {
-    return new Set([...localExcludedDomains, ...(supabaseReponse?.data || [])]);
+    return new Set([
+      ...localExcludedDomains,
+      ...(supabaseReponse?.data?.map(({ id }) => id) || [])
+    ]);
   }, [supabaseReponse?.data, localExcludedDomains]);
 
-  const addExcludedDomain = async (id: string) => {
-    setFreshlyExcludedDomains((prev) => new Set([...prev, id]));
-    await supabase.from('excluded_domains').insert({ user: user?.id, id });
-  };
+  const addExcludedDomain = useCallback(
+    async (id: string) => {
+      setFreshlyExcludedDomains((prev) => new Set([...prev, id]));
+      await supabase.from('excluded_domains').insert({ user: user?.id, id });
+    },
+    [supabase, user?.id]
+  );
 
-  const removeExcludedDomain = async (id: string) => {
-    setFreshlyExcludedDomains((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(id);
-      return newSet;
-    });
-    await supabase.from('excluded_domains').delete().eq('id', id);
-  };
+  const removeExcludedDomain = useCallback(
+    async (id: string) => {
+      setFreshlyExcludedDomains((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+      await supabase.from('excluded_domains').delete().eq('id', id);
+    },
+    [supabase]
+  );
 
   return {
     ...response,

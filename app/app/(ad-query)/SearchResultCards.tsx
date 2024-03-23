@@ -52,7 +52,7 @@ function SearchResultItem({
   return (
     <Card
       renderImage={() => (
-        <div className="w-full h-48 flex justify-center items-center">
+        <div className="w-full h-48 shrink-0 flex justify-center items-center">
           <CardMedia mediaData={mediaDataMap?.get(id)} />
         </div>
       )}

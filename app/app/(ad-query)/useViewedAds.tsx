@@ -4,12 +4,12 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/supabase';
 import { useMemo, useState } from 'react';
 
-export function useViewedAds(searchResults: SearchResultData[]) {
-  const adIds = searchResults.map((result) => result.id);
+export function useViewedAds(searchResults: SearchResultData[] | undefined) {
+  const adIds = searchResults ? searchResults.map((result) => result.id) : null;
   const supabase = createClientComponentClient<Database>();
   const { data: supabaseReponse, ...response } = useSWR(
-    ['viewedAds', ...adIds],
-    async () => await supabase.rpc('ad_id_in', { ids: adIds }).limit(100000)
+    adIds ? ['viewedAds', ...adIds] : null,
+    async () => await supabase.rpc('ad_id_in', { ids: adIds || [] }).limit(100000)
   );
 
   const oldViewedAdsSet = useMemo(() => new Set(supabaseReponse?.data || []), [supabaseReponse]);

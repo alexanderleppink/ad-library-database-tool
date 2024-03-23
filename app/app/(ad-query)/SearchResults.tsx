@@ -3,6 +3,7 @@ import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import { Alert, Spinner } from 'flowbite-react';
 import SearchResultsTable from '@/app/app/(ad-query)/SearchResultsTable';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
+import { useQueryMedia } from '@/app/app/(ad-query)/useQueryMedia';
 
 const reachThreshold = 25000;
 
@@ -25,7 +26,9 @@ function SearchResults({
       }));
   }, [queryResultData]);
 
-  const viewedAdsData = useViewedAds(filteredResults || []);
+  const viewedAdsData = useViewedAds(filteredResults);
+  const { data: mediaData } = useQueryMedia(filteredResults);
+  console.log(mediaData);
 
   if (isLoading) {
     return (

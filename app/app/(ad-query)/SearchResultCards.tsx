@@ -6,6 +6,7 @@ import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
+import { FetchMediaClusterItem, useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 
 export interface SearchCardItemData extends QueryResultData {
@@ -15,24 +16,30 @@ export interface SearchCardItemData extends QueryResultData {
 export interface SearchResultsCardsProps {
   viewedAdsData: ReturnType<typeof useViewedAds>;
   searchResults: SearchCardItemData[];
-  mediaDataMap: Map<string, MediaData> | undefined;
 }
 
 function SearchResultCards({
   searchResults,
-  mediaDataMap,
   viewedAdsData: { viewedAds, addNewViewedAd }
 }: SearchResultsCardsProps) {
+  const { mediaDataMap, fetchMedia } = useFetchMedia();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
       {searchResults.map((result, index) => (
-        <SearchResultItem
-          mediaDataMap={mediaDataMap}
-          key={index}
-          queryResultData={result}
-          viewedAdsSet={viewedAds}
-          onView={addNewViewedAd}
-        />
+        <FetchMediaClusterItem
+          key={result.id}
+          index={index}
+          allData={searchResults}
+          onEnterView={fetchMedia}
+        >
+          <SearchResultItem
+            mediaDataMap={mediaDataMap}
+            queryResultData={result}
+            viewedAdsSet={viewedAds}
+            onView={addNewViewedAd}
+          />
+        </FetchMediaClusterItem>
       ))}
     </div>
   );

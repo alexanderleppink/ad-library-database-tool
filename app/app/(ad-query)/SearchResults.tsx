@@ -27,7 +27,6 @@ function SearchResults({
   const { sortController, sortedData } = useSortController(resultsWithDomain);
 
   const viewedAdsData = useViewedAds(sortedData);
-  const { data: mediaData } = useFetchMedia(sortedData);
 
   if (isLoading) {
     return (
@@ -76,7 +75,6 @@ function SearchResults({
 
       {!!sortedData.length ? (
         <SearchResultCards
-          mediaDataMap={mediaData}
           searchResults={sortedData}
           viewedAdsData={viewedAdsData}
         />

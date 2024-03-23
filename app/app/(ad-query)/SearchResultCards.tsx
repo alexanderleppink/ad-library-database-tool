@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { Card, Spinner } from 'flowbite-react';
 import Link from 'next/link';
@@ -6,7 +6,7 @@ import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 import type { MediaData } from '@/app/app/(ad-query)/useQueryMedia';
-import { PhotoIcon } from '@heroicons/react/24/solid';
+import { PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -94,24 +94,41 @@ function SearchResultItem({
 }
 
 function CardMedia({ mediaData }: { mediaData: MediaData | undefined }) {
+  const [showVideo, setShowVideo] = useState(false);
   if (!mediaData) {
-    return <Spinner className="w-6 h-6" />;
+    return <Spinner className="w-8 h-8" />;
   }
 
-  if (!mediaData.mediaUrl) {
+  if (mediaData.videoUrl) {
+    if (mediaData.imageUrl && !showVideo) {
+      return (
+        <div
+          className="w-full h-full relative flex justify-center items-center cursor-pointer"
+          onClick={() => setShowVideo(true)}
+        >
+          <img src={mediaData.imageUrl} className="w-full h-full object-contain" alt="card image" />
+          <PlayCircleIcon className="w-10 h-10 absolute inset-auto bg-white rounded-full" />
+        </div>
+      );
+    }
+
     return (
-      <div className="flex flex-col gap-1 items-center">
-        <PhotoIcon className="w-6 h-6" />
-        <span>No media found</span>
-      </div>
+      <video className="w-full h-full object-contain" src={mediaData.videoUrl} controls autoPlay />
     );
   }
 
-  if (mediaData.isVideo) {
-    return <video className="w-full h-full object-contain" src={mediaData.mediaUrl} controls />;
+  if (mediaData.imageUrl) {
+    return (
+      <img className="w-full h-full object-contain" src={mediaData.imageUrl} alt="card image" />
+    );
   }
 
-  return <img className="w-full h-full object-contain" src={mediaData.mediaUrl} alt="card image" />;
+  return (
+    <div className="flex flex-col gap-1 items-center">
+      <PhotoIcon className="w-8 h-8" />
+      <span>No media found</span>
+    </div>
+  );
 }
 
 export default SearchResultCards;

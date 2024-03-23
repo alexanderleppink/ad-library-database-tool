@@ -25,9 +25,9 @@ function extractMediaData(html: string) {
 
   const videoUrl = extractUrl('video_sd_url') || extractUrl('video_hd_url');
   if (videoUrl) {
-    return { mediaUrl: videoUrl, isVideo: true };
+    return { videoUrl, imageUrl: extractUrl('video_preview_image_url') || null };
   }
 
   const imageUrl = extractUrl('resized_image_url');
-  return { mediaUrl: imageUrl || null, isVideo: false };
+  return { imageUrl: imageUrl || null, videoUrl: null };
 }

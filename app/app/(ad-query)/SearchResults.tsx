@@ -27,8 +27,8 @@ function SearchResults({
   }, [queryResultData]);
 
   const viewedAdsData = useViewedAds(filteredResults);
-  const { data: mediaData } = useQueryMedia(filteredResults);
-  console.log(mediaData);
+  // const { data: mediaData } = useQueryMedia(filteredResults);
+  // console.log(mediaData);
 
   if (isLoading) {
     return (

@@ -1,10 +1,12 @@
 import React from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
-import { Card } from 'flowbite-react';
+import { Card, Spinner } from 'flowbite-react';
 import Link from 'next/link';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import { format } from 'date-fns';
 import clsx from 'clsx';
+import type { MediaData } from '@/app/app/(ad-query)/useQueryMedia';
+import { PhotoIcon } from '@heroicons/react/24/solid';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -13,16 +15,19 @@ export interface SearchCardItemData extends QueryResultData {
 export interface SearchResultsCardsProps {
   viewedAdsData: ReturnType<typeof useViewedAds>;
   searchResults: SearchCardItemData[];
+  mediaDataMap: Map<string, MediaData> | undefined;
 }
 
 function SearchResultCards({
   searchResults,
+  mediaDataMap,
   viewedAdsData: { viewedAds, addNewViewedAd }
 }: SearchResultsCardsProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
       {searchResults.map((result, index) => (
         <SearchResultItem
+          mediaDataMap={mediaDataMap}
           key={index}
           queryResultData={result}
           viewedAdsSet={viewedAds}
@@ -36,14 +41,21 @@ function SearchResultCards({
 function SearchResultItem({
   queryResultData: { domain, id, ad_snapshot_url, ad_delivery_start_time, eu_total_reach },
   viewedAdsSet,
-  onView
+  onView,
+  mediaDataMap
 }: {
   queryResultData: SearchCardItemData;
   viewedAdsSet: Set<string>;
   onView?: (id: string) => unknown;
+  mediaDataMap: Map<string, MediaData> | undefined;
 }) {
   return (
     <Card
+      renderImage={() => (
+        <div className="w-full h-48 flex justify-center items-center">
+          <CardMedia mediaData={mediaDataMap?.get(id)} />
+        </div>
+      )}
       className={clsx({
         'bg-gray-200': viewedAdsSet.has(id)
       })}
@@ -79,6 +91,27 @@ function SearchResultItem({
       </a>
     </Card>
   );
+}
+
+function CardMedia({ mediaData }: { mediaData: MediaData | undefined }) {
+  if (!mediaData) {
+    return <Spinner className="w-6 h-6" />;
+  }
+
+  if (!mediaData.mediaUrl) {
+    return (
+      <div className="flex flex-col gap-1 items-center">
+        <PhotoIcon className="w-6 h-6" />
+        <span>No media found</span>
+      </div>
+    );
+  }
+
+  if (mediaData.isVideo) {
+    return <video className="w-full h-full object-contain" src={mediaData.mediaUrl} controls />;
+  }
+
+  return <img className="w-full h-full object-contain" src={mediaData.mediaUrl} alt="card image" />;
 }
 
 export default SearchResultCards;

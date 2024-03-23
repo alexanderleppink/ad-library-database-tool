@@ -3,6 +3,7 @@ import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
+import { useQueryMedia } from '@/app/app/(ad-query)/useQueryMedia';
 
 const reachThreshold = 25000;
 
@@ -26,8 +27,7 @@ function SearchResults({
   }, [queryResultData]);
 
   const viewedAdsData = useViewedAds(filteredResults);
-  // const { data: mediaData } = useQueryMedia(filteredResults);
-  // console.log(mediaData);
+  const { data: mediaData } = useQueryMedia(filteredResults);
 
   if (isLoading) {
     return (
@@ -73,7 +73,11 @@ function SearchResults({
       </div>
 
       {!!filteredResults.length ? (
-        <SearchResultCards searchResults={filteredResults} viewedAdsData={viewedAdsData} />
+        <SearchResultCards
+          mediaDataMap={mediaData}
+          searchResults={filteredResults}
+          viewedAdsData={viewedAdsData}
+        />
       ) : (
         <div className="flex justify-center text-center p-4">No results found</div>
       )}

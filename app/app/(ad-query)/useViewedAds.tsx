@@ -1,12 +1,14 @@
-import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import useSWR from 'swr';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/supabase';
 import { useMemo, useState } from 'react';
+import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
+import { useUser } from '@supabase/auth-helpers-react';
 
-export function useViewedAds(searchResults: SearchResultData[] | undefined) {
+export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   const adIds = searchResults ? searchResults.map((result) => result.id) : null;
   const supabase = createClientComponentClient<Database>();
+  const user = useUser();
   const { data: supabaseReponse, ...response } = useSWR(
     adIds ? ['viewedAds', ...adIds] : null,
     async () => await supabase.rpc('ad_id_in', { ids: adIds || [] }).limit(100000)
@@ -20,8 +22,9 @@ export function useViewedAds(searchResults: SearchResultData[] | undefined) {
     [oldViewedAdsSet, newViewedAdsSet]
   );
 
-  const addNewViewedAd = (id: string) => {
+  const addNewViewedAd = async (id: string) => {
     setNewViewedAdsSet((prev) => new Set([...prev, id]));
+    await supabase.from('viewed_ads').insert({ user: user?.id, id });
   };
 
   return {

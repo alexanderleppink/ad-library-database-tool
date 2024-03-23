@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
-import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import { Alert, Spinner } from 'flowbite-react';
-import SearchResultsTable from '@/app/app/(ad-query)/SearchResultsTable';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
-import { useQueryMedia } from '@/app/app/(ad-query)/useQueryMedia';
+import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
+import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 
 const reachThreshold = 25000;
 
@@ -13,7 +12,7 @@ function SearchResults({
   error
 }: {
   error?: string;
-  queryResultData: SearchResultData[] | undefined;
+  queryResultData: QueryResultData[] | undefined;
   isLoading?: boolean;
 }) {
   const filteredResults = useMemo(() => {
@@ -74,7 +73,7 @@ function SearchResults({
       </div>
 
       {!!filteredResults.length ? (
-        <SearchResultsTable searchResults={filteredResults} viewedAdsData={viewedAdsData} />
+        <SearchResultCards searchResults={filteredResults} viewedAdsData={viewedAdsData} />
       ) : (
         <div className="flex justify-center text-center p-4">No results found</div>
       )}

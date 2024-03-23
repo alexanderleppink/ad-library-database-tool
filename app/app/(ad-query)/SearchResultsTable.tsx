@@ -1,6 +1,5 @@
 import { Table } from 'flowbite-react';
 import React from 'react';
-import type { SearchResultData } from '@/app/app/(ad-query)/SearchResultItem';
 import SortHeadCell from '@/components/SortHeadCell';
 import { useSortColumns } from '@/hooks/useSortColumns';
 import { format } from 'date-fns';
@@ -9,8 +8,9 @@ import { useUser } from '@supabase/auth-helpers-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import clsx from 'clsx';
+import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 
-export interface SearchTableRow extends SearchResultData {
+export interface SearchTableRow extends QueryResultData {
   domain: string | undefined;
 }
 
@@ -29,13 +29,6 @@ function SearchResultsTable({
     startDate: (item) => item.ad_delivery_start_time
   });
 
-  const user = useUser();
-  const supabase = createClientComponentClient<Database>();
-  const handleView = async (id: string) => {
-    addNewViewedAd(id);
-    await supabase.from('viewed_ads').insert({ user: user?.id, id });
-  };
-
   return (
     <Table>
       <Table.Head>
@@ -46,7 +39,7 @@ function SearchResultsTable({
       </Table.Head>
       <Table.Body className="divide-y">
         {sortedArray.map((result, index) => (
-          <TableRow viewedAdsSet={viewedAds} key={index} rowData={result} onView={handleView} />
+          <TableRow viewedAdsSet={viewedAds} key={index} rowData={result} onView={addNewViewedAd} />
         ))}
       </Table.Body>
     </Table>

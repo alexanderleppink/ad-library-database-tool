@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import clsx from 'clsx';
 import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 import { FetchMediaClusterItem, useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
-import { PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import { EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -49,11 +49,13 @@ function _SearchResultItem({
   queryResultData: { domain, id, ad_snapshot_url, ad_delivery_start_time, eu_total_reach },
   viewedAdsSet,
   onView,
-  mediaDataMap
+  mediaDataMap,
+  onHideClick
 }: {
   queryResultData: SearchCardItemData;
   viewedAdsSet: Set<string>;
   onView?: (id: string) => unknown;
+  onHideClick?: (id: string) => unknown;
   mediaDataMap: Map<string, MediaData> | undefined;
 }) {
   return (
@@ -68,7 +70,7 @@ function _SearchResultItem({
       })}
     >
       <div className="flex flex-col gap-1">
-        <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis">
+        <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis flex gap-1">
           {domain ? (
             <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
               {domain}
@@ -76,6 +78,11 @@ function _SearchResultItem({
           ) : (
             <span>No website linked</span>
           )}
+
+          <EyeSlashIcon
+            className="w-5 h-5 text-gray-500 cursor-pointer"
+            onClick={() => onHideClick?.(id)}
+          />
         </h4>
 
         <div className="text-gray-500 text-sm">

@@ -4,8 +4,7 @@ import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import { useQueryMedia } from '@/app/app/(ad-query)/useQueryMedia';
-
-const reachThreshold = 25000;
+import { useSortController } from '@/app/app/(ad-query)/useSortController';
 
 function SearchResults({
   queryResultData,
@@ -16,18 +15,19 @@ function SearchResults({
   queryResultData: QueryResultData[] | undefined;
   isLoading?: boolean;
 }) {
-  const filteredResults = useMemo(() => {
+  const resultsWithDomain = useMemo(() => {
     return queryResultData
-      ?.filter((result) => result.eu_total_reach >= reachThreshold)
-      .filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
+      ?.filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
       .map((result) => ({
         ...result,
         domain: result.ad_creative_link_captions?.[0].replace(/https?:\/\//, '') || ''
       }));
   }, [queryResultData]);
 
-  const viewedAdsData = useViewedAds(filteredResults);
-  const { data: mediaData } = useQueryMedia(filteredResults);
+  const { sortController, sortedData } = useSortController(resultsWithDomain);
+
+  const viewedAdsData = useViewedAds(sortedData);
+  const { data: mediaData } = useQueryMedia(sortedData);
 
   if (isLoading) {
     return (
@@ -48,7 +48,7 @@ function SearchResults({
     );
   }
 
-  if (!queryResultData || !filteredResults) {
+  if (!queryResultData || !sortedData) {
     return null;
   }
 
@@ -56,9 +56,11 @@ function SearchResults({
     <div className="w-full flex flex-col gap-4">
       <h3 className="text-xl font-semibold my-2">Search results</h3>
 
+      {sortController}
+
       <div className="flex items-center justify-between">
         <div>
-          Found <span className="font-bold text-green-700">{filteredResults.length}</span> results (
+          Found <span className="font-bold text-green-700">{sortedData.length}</span> results (
           <b>{queryResultData.length}</b> before filtering)
         </div>
 
@@ -72,10 +74,10 @@ function SearchResults({
         ) : null}
       </div>
 
-      {!!filteredResults.length ? (
+      {!!sortedData.length ? (
         <SearchResultCards
           mediaDataMap={mediaData}
-          searchResults={filteredResults}
+          searchResults={sortedData}
           viewedAdsData={viewedAdsData}
         />
       ) : (

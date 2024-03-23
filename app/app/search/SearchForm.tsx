@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { SearchConfig } from '@/app/app/search/search.types';
 import { createDefaultSearchConfig, SearchConfigSchema } from '@/app/app/search/search.types';
 import SearchConfiguration from '@/app/app/search/SearchConfiguration';
-import { Button, TextInput } from 'flowbite-react';
+import { Button, Card, TextInput } from 'flowbite-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import type { SearchQueryResultData } from '@/app/app/search/actions';
 import { searchAds } from '@/app/app/search/actions';
@@ -54,7 +54,7 @@ function SearchForm({ className }: SearchFormProps) {
 
   return (
     <div className={clsx(className, 'flex flex-col gap-4')}>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto gap-2 flex flex-col">
         <SearchConfiguration formObject={formObject} />
         <Search onSubmit={trigger} formObject={formObject} />
       </div>
@@ -89,19 +89,21 @@ function Search({
   };
 
   return (
-    <div className="p-4 flex flex-col gap-2">
-      <div className="flex gap-1">
-        <TextInput
-          className="grow"
-          placeholder="Search terms..."
-          onKeyUp={handleKeyUp}
-          {...register('searchTerms')}
-        />
-        <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
-          <MagnifyingGlassIcon className="h-5" />
-        </Button>
+    <Card>
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-1">
+          <TextInput
+            className="grow"
+            placeholder="Search terms..."
+            onKeyUp={handleKeyUp}
+            {...register('searchTerms')}
+          />
+          <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
+            <MagnifyingGlassIcon className="h-5" />
+          </Button>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }
 

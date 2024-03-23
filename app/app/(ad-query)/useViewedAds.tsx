@@ -4,9 +4,13 @@ import type { Database } from '@/types/supabase';
 import { useMemo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
+import { sortBy } from 'lodash-es';
 
 export function useViewedAds(searchResults: QueryResultData[] | undefined) {
-  const adIds = searchResults ? searchResults.map((result) => result.id) : null;
+  const adIds = useMemo(
+    () => (searchResults ? sortBy(searchResults.map((result) => result.id)) : null),
+    [searchResults]
+  );
   const supabase = createClientComponentClient<Database>();
   const user = useUser();
   const { data: supabaseReponse, ...response } = useSWR(

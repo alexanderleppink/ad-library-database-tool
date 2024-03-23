@@ -15,11 +15,12 @@ function SearchResults({
   queryResultData: QueryResultData[] | undefined;
   isLoading?: boolean;
 }) {
-  const { excludedDomains, defreshExcludedDomains } = useExcludedDomains();
+  const { excludedDomains, defreshExcludedDomains, ...excludedDomainsResponse } =
+    useExcludedDomains();
 
   useEffect(() => {
     defreshExcludedDomains();
-  }, [queryResultData]);
+  }, [defreshExcludedDomains, queryResultData]);
 
   const resultsWithDomain = useMemo(() => {
     return queryResultData
@@ -70,14 +71,24 @@ function SearchResults({
           <b>{queryResultData.length}</b> before filtering)
         </div>
 
-        {viewedAdsData.isLoading ? (
-          <div className="flex items-center space-x-2">
-            <Spinner aria-label="loading" />
-            <span>Loading viewed ads...</span>
-          </div>
-        ) : viewedAdsData.error ? (
-          <Alert color="failure">Failed to load viewed ads!</Alert>
-        ) : null}
+        <div className="flex gap-2 items-center">
+          {excludedDomainsResponse.isLoading ? (
+            <div className="flex items-center space-x-2">
+              <Spinner aria-label="loading" />
+              <span>Loading excluded domains...</span>
+            </div>
+          ) : excludedDomainsResponse.error ? (
+            <Alert color="failure">Failed to load excluded domains!</Alert>
+          ) : null}
+          {viewedAdsData.isLoading ? (
+            <div className="flex items-center space-x-2">
+              <Spinner aria-label="loading" />
+              <span>Loading viewed ads...</span>
+            </div>
+          ) : viewedAdsData.error ? (
+            <Alert color="failure">Failed to load viewed ads!</Alert>
+          ) : null}
+        </div>
       </div>
 
       {!!sortedData.length ? (

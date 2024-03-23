@@ -23,6 +23,11 @@ export function useFetchMedia() {
     const cleanedCluster = cluster.filter(
       ({ id }) => !currentFetching.current.has(id) && !mediaDataMap.has(id)
     );
+
+    if (!cleanedCluster.length) {
+      return;
+    }
+
     cleanedCluster.forEach(({ id }) => currentFetching.current.add(id));
 
     const result = await fetchMediaData(cleanedCluster);
@@ -50,7 +55,12 @@ export function FetchMediaClusterItem<T>({
   if (index % clusterFetchInterval === 0) {
     const cluster = allData.slice(index, index + clusterSize);
     return (
-      <ContainerWithVisibilityObserver onVisible={() => onEnterView(cluster)}>
+      <ContainerWithVisibilityObserver
+        onVisible={() => {
+          console.info('Starting to fetch for cluster page', index / clusterFetchInterval);
+          return onEnterView(cluster);
+        }}
+      >
         {children}
       </ContainerWithVisibilityObserver>
     );

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import { format } from 'date-fns';
 import clsx from 'clsx';
-import type { MediaData } from '@/app/app/(ad-query)/useQueryMedia';
+import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 import { PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 
 export interface SearchCardItemData extends QueryResultData {

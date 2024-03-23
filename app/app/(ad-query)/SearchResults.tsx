@@ -3,7 +3,7 @@ import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
-import { useQueryMedia } from '@/app/app/(ad-query)/useQueryMedia';
+import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
 
 function SearchResults({
@@ -27,7 +27,7 @@ function SearchResults({
   const { sortController, sortedData } = useSortController(resultsWithDomain);
 
   const viewedAdsData = useViewedAds(sortedData);
-  const { data: mediaData } = useQueryMedia(sortedData);
+  const { data: mediaData } = useFetchMedia(sortedData);
 
   if (isLoading) {
     return (

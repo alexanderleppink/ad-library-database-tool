@@ -4,7 +4,7 @@ import useSWRInfinite from 'swr/infinite';
 
 export type MediaData = Awaited<ReturnType<typeof fetchMediaData>>[number];
 
-export function useQueryMedia(searchResultData: QueryResultData[] | undefined) {
+export function useFetchMedia(searchResultData: QueryResultData[] | undefined) {
   const getKey = (pageIndex: number) => {
     const clusterSize = 25;
     const cluster = searchResultData?.slice(

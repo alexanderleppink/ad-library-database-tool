@@ -38,6 +38,10 @@ async function Navigation({}: NavigationProps) {
         <NavbarLink className="flex items-center" href="/app/search">
           Search
         </NavbarLink>
+        <NavbarLink className="flex items-center" href="/app/options">
+          Options
+        </NavbarLink>
+
         {user ? (
           <form action={logout}>
             <Button size="xs" type="submit">

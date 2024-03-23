@@ -1,13 +1,13 @@
 import React from 'react';
-import { FormFieldController, SelectFormField, TextInputFormField } from '@/components/FormField';
+import { FormFieldController, SelectFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
-import { adStatusList } from '@/app/app/search/search.types';
-import { countryList, languagesList } from '@/app/app/search/search.types';
+import { adStatusList, countryList, languagesList } from '@/app/app/search/search.types';
 import { Button, Card, Checkbox, Datepicker } from 'flowbite-react';
 import { format } from 'date-fns';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
+import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
 
 interface SearchConfigurationProps {
   formObject: UseFormReturn<SearchConfig>;
@@ -99,12 +99,19 @@ function SearchConfiguration({
           ))}
         </SelectFormField>
 
-        <TextInputFormField
+        <SelectFormField
           {...register('maxResults', { valueAsNumber: true })}
-          type="number"
           label="Maximum results"
           errors={errors}
-        />
+        >
+          <option>{pageSize / 4}</option>
+          <option>{pageSize / 2}</option>
+          <option>{pageSize}</option>
+          <option>{pageSize * 2}</option>
+          <option>{pageSize * 4}</option>
+          <option>{pageSize * 8}</option>
+          <option>{pageSize * 16}</option>
+        </SelectFormField>
       </div>
     </Card>
   );

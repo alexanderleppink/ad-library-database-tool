@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { Card, Spinner } from 'flowbite-react';
 import Link from 'next/link';
@@ -45,7 +45,7 @@ function SearchResultCards({
   );
 }
 
-function SearchResultItem({
+function _SearchResultItem({
   queryResultData: { domain, id, ad_snapshot_url, ad_delivery_start_time, eu_total_reach },
   viewedAdsSet,
   onView,
@@ -100,7 +100,9 @@ function SearchResultItem({
   );
 }
 
-function CardMedia({ mediaData }: { mediaData: MediaData | undefined }) {
+const SearchResultItem = memo(_SearchResultItem);
+
+function _CardMedia({ mediaData }: { mediaData: MediaData | undefined }) {
   const [showVideo, setShowVideo] = useState(false);
   if (!mediaData) {
     return <Spinner className="w-8 h-8" />;
@@ -138,4 +140,6 @@ function CardMedia({ mediaData }: { mediaData: MediaData | undefined }) {
   );
 }
 
-export default SearchResultCards;
+const CardMedia = memo(_CardMedia);
+
+export default memo(SearchResultCards);

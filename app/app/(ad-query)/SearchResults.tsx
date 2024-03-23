@@ -3,7 +3,6 @@ import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
-import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
 
 function SearchResults({
@@ -74,10 +73,7 @@ function SearchResults({
       </div>
 
       {!!sortedData.length ? (
-        <SearchResultCards
-          searchResults={sortedData}
-          viewedAdsData={viewedAdsData}
-        />
+        <SearchResultCards searchResults={sortedData} viewedAdsData={viewedAdsData} />
       ) : (
         <div className="flex justify-center text-center p-4">No results found</div>
       )}

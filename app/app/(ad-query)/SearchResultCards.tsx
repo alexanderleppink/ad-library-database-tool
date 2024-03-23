@@ -7,7 +7,8 @@ import { format } from 'date-fns';
 import clsx from 'clsx';
 import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 import { FetchMediaClusterItem, useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
-import { EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -23,6 +24,7 @@ function SearchResultCards({
   viewedAdsData: { viewedAds, addNewViewedAd }
 }: SearchResultsCardsProps) {
   const { mediaDataMap, fetchMedia } = useFetchMedia();
+  const { freshlyExcludedDomains } = useExcludedDomains();
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
@@ -34,6 +36,7 @@ function SearchResultCards({
           onEnterView={fetchMedia}
         >
           <SearchResultItem
+            freshlyExcludedDomains={freshlyExcludedDomains}
             mediaDataMap={mediaDataMap}
             queryResultData={result}
             viewedAdsSet={viewedAds}
@@ -50,12 +53,14 @@ function _SearchResultItem({
   viewedAdsSet,
   onView,
   mediaDataMap,
-  onHideClick
+  onDomainExclude,
+  freshlyExcludedDomains
 }: {
+  freshlyExcludedDomains: Set<string>;
   queryResultData: SearchCardItemData;
   viewedAdsSet: Set<string>;
   onView?: (id: string) => unknown;
-  onHideClick?: (id: string) => unknown;
+  onDomainExclude?: (id: string, exclude: boolean) => unknown;
   mediaDataMap: Map<string, MediaData> | undefined;
 }) {
   return (
@@ -72,17 +77,25 @@ function _SearchResultItem({
       <div className="flex flex-col gap-1">
         <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis flex gap-1">
           {domain ? (
-            <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
-              {domain}
-            </Link>
+            <>
+              <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
+                {domain}
+              </Link>
+              {freshlyExcludedDomains.has(domain) ? (
+                <EyeIcon
+                  className="w-5 h-5 text-gray-500 cursor-pointer"
+                  onClick={() => onDomainExclude?.(domain, true)}
+                />
+              ) : (
+                <EyeSlashIcon
+                  className="w-5 h-5 text-gray-500 cursor-pointer"
+                  onClick={() => onDomainExclude?.(domain, false)}
+                />
+              )}
+            </>
           ) : (
             <span>No website linked</span>
           )}
-
-          <EyeSlashIcon
-            className="w-5 h-5 text-gray-500 cursor-pointer"
-            onClick={() => onHideClick?.(id)}
-          />
         </h4>
 
         <div className="text-gray-500 text-sm">

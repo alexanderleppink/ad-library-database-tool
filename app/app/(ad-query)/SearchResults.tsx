@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
+import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 
 function SearchResults({
   queryResultData,
@@ -14,14 +15,21 @@ function SearchResults({
   queryResultData: QueryResultData[] | undefined;
   isLoading?: boolean;
 }) {
+  const { excludedDomains, defreshExcludedDomains } = useExcludedDomains();
+
+  useEffect(() => {
+    defreshExcludedDomains();
+  }, [queryResultData]);
+
   const resultsWithDomain = useMemo(() => {
     return queryResultData
       ?.filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
       .map((result) => ({
         ...result,
         domain: result.ad_creative_link_captions?.[0].replace(/https?:\/\//, '') || ''
-      }));
-  }, [queryResultData]);
+      }))
+      .filter(({ domain }) => !excludedDomains.has(domain));
+  }, [queryResultData, excludedDomains]);
 
   const { sortController, sortedData } = useSortController(resultsWithDomain);
 

@@ -24,7 +24,7 @@ function SearchResultCards({
   viewedAdsData: { viewedAds, addNewViewedAd }
 }: SearchResultsCardsProps) {
   const { mediaDataMap, fetchMedia } = useFetchMedia();
-  const { freshlyExcludedDomains, addExcludedDomain, removeExcludedDomain } = useExcludedDomains();
+  const { isDomainFreshlyExcluded, addExcludedDomain, removeExcludedDomain } = useExcludedDomains();
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
@@ -39,7 +39,7 @@ function SearchResultCards({
             onDomainExclude={(id, exclude) =>
               exclude ? addExcludedDomain(id) : removeExcludedDomain(id)
             }
-            hasFreshlyExcludedDomain={!!result.domain && freshlyExcludedDomains.has(result.domain)}
+            hasFreshlyExcludedDomain={!!result.domain && isDomainFreshlyExcluded(result.domain)}
             mediaData={mediaDataMap?.get(result.id)}
             queryResultData={result}
             isViewedAd={!!viewedAds?.has(result.id)}

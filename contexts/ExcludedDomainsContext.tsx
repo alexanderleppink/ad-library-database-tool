@@ -16,6 +16,10 @@ export const ExcludedDomainsProvider = ({ children }: PropsWithChildren) => {
   );
 };
 
+function extractTopLevelDomain(domain: string) {
+  return domain.match(/^([^.]+\.)?([^.]+\.[^\/?]+)/)?.[2];
+}
+
 function useExcludedDomainsInternal() {
   const supabase = createClientComponentClient<Database>();
   const user = useUser();
@@ -30,6 +34,11 @@ function useExcludedDomainsInternal() {
     }
   }, [freshlyExcludedDomains, localExcludedDomains]);
 
+  const isDomainFreshlyExcluded = useCallback(
+    (domain: string) => freshlyExcludedDomains.has(extractTopLevelDomain(domain) || domain),
+    [freshlyExcludedDomains]
+  );
+
   const { data: supabaseReponse, ...response } = useSWR(
     ['excludedDomains'],
     async () => await supabase.from('excluded_domains').select('id').limit(100000)
@@ -42,30 +51,37 @@ function useExcludedDomainsInternal() {
     ]);
   }, [supabaseReponse?.data, localExcludedDomains]);
 
+  const isDomainExcluded = useCallback(
+    (domain: string) => excludedDomains.has(extractTopLevelDomain(domain) || domain),
+    [excludedDomains]
+  );
+
   const addExcludedDomain = useCallback(
-    async (id: string) => {
-      setFreshlyExcludedDomains((prev) => new Set([...prev, id]));
-      await supabase.from('excluded_domains').insert({ user: user?.id, id });
+    async (domain: string) => {
+      const topLevelDomain = extractTopLevelDomain(domain) || domain;
+      setFreshlyExcludedDomains((prev) => new Set([...prev, topLevelDomain]));
+      await supabase.from('excluded_domains').insert({ user: user?.id, id: topLevelDomain });
     },
     [supabase, user?.id]
   );
 
   const removeExcludedDomain = useCallback(
-    async (id: string) => {
+    async (domain: string) => {
+      const topLevelDomain = extractTopLevelDomain(domain) || domain;
       setFreshlyExcludedDomains((prev) => {
         const newSet = new Set(prev);
-        newSet.delete(id);
+        newSet.delete(topLevelDomain);
         return newSet;
       });
-      await supabase.from('excluded_domains').delete().eq('id', id);
+      await supabase.from('excluded_domains').delete().eq('id', topLevelDomain);
     },
     [supabase]
   );
 
   return {
     ...response,
-    excludedDomains,
-    freshlyExcludedDomains,
+    isDomainFreshlyExcluded,
+    isDomainExcluded,
     addExcludedDomain,
     removeExcludedDomain,
     defreshExcludedDomains

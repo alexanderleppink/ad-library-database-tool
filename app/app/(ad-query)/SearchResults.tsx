@@ -15,7 +15,7 @@ function SearchResults({
   queryResultData: QueryResultData[] | undefined;
   isLoading?: boolean;
 }) {
-  const { excludedDomains, defreshExcludedDomains, ...excludedDomainsResponse } =
+  const { isDomainExcluded, defreshExcludedDomains, ...excludedDomainsResponse } =
     useExcludedDomains();
 
   useEffect(() => {
@@ -30,8 +30,8 @@ function SearchResults({
         ...result,
         domain: result.ad_creative_link_captions?.[0].replace(/https?:\/\//, '') || ''
       }))
-      .filter(({ domain }) => !excludedDomains.has(domain));
-  }, [queryResultData, excludedDomains]);
+      .filter(({ domain }) => !isDomainExcluded(domain));
+  }, [queryResultData, isDomainExcluded]);
 
   const { sortController, sortedData } = useSortController(resultsWithDomain);
 

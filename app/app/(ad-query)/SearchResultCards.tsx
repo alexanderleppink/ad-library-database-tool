@@ -91,11 +91,16 @@ function _SearchResultItem({
           <h4 className="text-lg font-bold overflow-hidden whitespace-nowrap text-ellipsis flex gap-2 items-center">
             {domain ? (
               <>
-                <Link target="_blank" rel="noreferrer" href={`https://${domain}`}>
+                <Link
+                  target="_blank"
+                  rel="noreferrer"
+                  href={`https://${domain}`}
+                  className="shrink truncate hover:underline"
+                >
                   {domain}
                 </Link>
                 <EyeSlashIcon
-                  className="w-5 h-5 text-gray-500 cursor-pointer"
+                  className="w-5 h-5 text-gray-500 hover:text-blue-500 active:text-blue-700 cursor-pointer shrink-0"
                   onClick={() => onDomainExclude?.(domain, true)}
                 />
               </>

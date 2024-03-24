@@ -20,7 +20,8 @@ function SearchResults({
 
   useEffect(() => {
     defreshExcludedDomains();
-  }, [defreshExcludedDomains, queryResultData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryResultData]);
 
   const resultsWithDomain = useMemo(() => {
     return queryResultData

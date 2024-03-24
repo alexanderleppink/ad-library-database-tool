@@ -24,8 +24,10 @@ function useExcludedDomainsInternal() {
   const [localExcludedDomains, setLocalExcludedDomains] = useState(new Set<string>());
 
   const defreshExcludedDomains = useCallback(() => {
-    setLocalExcludedDomains(new Set([...localExcludedDomains, ...freshlyExcludedDomains]));
-    setFreshlyExcludedDomains(new Set<string>());
+    if (freshlyExcludedDomains.size > 0) {
+      setLocalExcludedDomains(new Set([...localExcludedDomains, ...freshlyExcludedDomains]));
+      setFreshlyExcludedDomains(new Set<string>());
+    }
   }, [freshlyExcludedDomains, localExcludedDomains]);
 
   const { data: supabaseReponse, ...response } = useSWR(

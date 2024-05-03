@@ -26,6 +26,7 @@ function MultipleSelectDropdown<T extends string | number>({
 
   return (
     <Dropdown
+      className="overflow-y-auto max-h-80"
       disabled={disabled}
       renderTrigger={() => <TextInput readOnly value={value.join(', ')} />}
       label=""

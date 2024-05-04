@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { ensureMinOneItem, mutable } from '@/utils/typeUtils';
-import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
+import { initialPageSize } from '@/app/app/(ad-query)/adQuery.types';
 
 export const countryList = [
   'NL',
@@ -32,7 +32,8 @@ export const SearchConfigSchema = z.object({
   deliveryDateStart: z.date().nullable(),
   deliveryDateEnd: z.date().nullable(),
   checkOnlyStartDate: z.boolean().optional(),
-  maxResults: z.number().optional()
+  maxResults: z.number(),
+  pageSize: z.number()
 });
 
 export type SearchConfig = z.infer<typeof SearchConfigSchema>;
@@ -46,7 +47,8 @@ export function createDefaultSearchConfig(): SearchConfig {
     countries: ['NL'],
     deliveryDateStart: null,
     deliveryDateEnd: null,
-    maxResults: pageSize * 2,
+    maxResults: initialPageSize * 2,
+    pageSize: initialPageSize,
     checkOnlyStartDate: false
   };
 }

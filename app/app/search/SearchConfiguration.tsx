@@ -3,11 +3,12 @@ import { FormFieldController, SelectFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
 import { adStatusList, countryList, languagesList } from '@/app/app/search/search.types';
-import { Button, Card, Checkbox, Datepicker } from 'flowbite-react';
+import { Button, Card, Checkbox, Datepicker, Tooltip } from 'flowbite-react';
 import { format } from 'date-fns';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
-import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
+import { initialPageSize } from '@/app/app/(ad-query)/adQuery.types';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 
 interface SearchConfigurationProps {
   formObject: UseFormReturn<SearchConfig>;
@@ -91,12 +92,24 @@ function SearchConfiguration({
           </div>
         </div>
 
-        <SelectFormField {...register('status')} label="Ad status" errors={errors}>
-          {adStatusList.map((status) => (
-            <option key={status} value={status}>
-              {status}
-            </option>
-          ))}
+        <SelectFormField
+          {...register('pageSize', { valueAsNumber: true })}
+          label={
+            <Tooltip content="Only change if necessary">
+              <div className="flex gap-2 items-center">
+                Page size
+                <QuestionMarkCircleIcon className="w-3 h-3" />
+              </div>
+            </Tooltip>
+          }
+          errors={errors}
+        >
+          <option>{500}</option>
+          <option>{1000}</option>
+          <option>{1500}</option>
+          <option>{2000}</option>
+          <option>{3000}</option>
+          <option>{initialPageSize}</option>
         </SelectFormField>
 
         <SelectFormField
@@ -104,13 +117,21 @@ function SearchConfiguration({
           label="Maximum results"
           errors={errors}
         >
-          <option>{pageSize / 4}</option>
-          <option>{pageSize / 2}</option>
-          <option>{pageSize}</option>
-          <option>{pageSize * 2}</option>
-          <option>{pageSize * 4}</option>
-          <option>{pageSize * 8}</option>
-          <option>{pageSize * 16}</option>
+          <option>{initialPageSize / 4}</option>
+          <option>{initialPageSize / 2}</option>
+          <option>{initialPageSize}</option>
+          <option>{initialPageSize * 2}</option>
+          <option>{initialPageSize * 4}</option>
+          <option>{initialPageSize * 8}</option>
+          <option>{initialPageSize * 16}</option>
+        </SelectFormField>
+
+        <SelectFormField {...register('status')} label="Ad status" errors={errors}>
+          {adStatusList.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
         </SelectFormField>
       </div>
     </Card>

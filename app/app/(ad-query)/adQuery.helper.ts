@@ -1,10 +1,12 @@
 import type { QueryResult } from '@/app/app/(ad-query)/adQuery.types';
-import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
 
 export function queryAllPages<Q extends object, R extends QueryResult<any>>(
   queryFn: (params: Q) => Promise<R>
 ) {
-  return async (searchQuery: Q, { totalLimit }: Partial<{ totalLimit: number }> = {}) => {
+  return async (
+    searchQuery: Q,
+    { totalLimit, pageSize }: { totalLimit: number; pageSize: number }
+  ) => {
     let allResults: R['data'] = [];
     let next: string | undefined;
     for (let page = 0; true; page++) {

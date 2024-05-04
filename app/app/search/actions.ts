@@ -5,7 +5,6 @@ import { format } from 'date-fns';
 import { mutable } from '@/utils/typeUtils';
 
 import type { QueryResult, ResultField } from '@/app/app/(ad-query)/adQuery.types';
-import { pageSize } from '@/app/app/(ad-query)/adQuery.types';
 
 const fields = mutable([
   'ad_creative_link_captions',
@@ -28,10 +27,14 @@ export async function searchAds(searchConfig: SearchConfig): Promise<SearchQuery
     method: 'GET'
   };
 
-  return fetch(
-    `https://graph.facebook.com/ads_archive?${queryParams.toString()}`,
-    requestOptions
-  ).then((response) => response.json());
+  return fetch(`https://graph.facebook.com/ads_archive?${queryParams.toString()}`, requestOptions)
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.error) {
+        throw new Error(`${response.error.message}\nTry to reduce page size to prevent this.`);
+      }
+      return response;
+    });
 }
 
 function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {
@@ -46,8 +49,8 @@ function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {
     ad_active_status: searchConfig.status,
     fields: fields.join(', '),
     limit:
-      !searchConfig.maxResults || pageSize < searchConfig.maxResults
-        ? pageSize.toString()
+      searchConfig.pageSize < searchConfig.maxResults
+        ? searchConfig.pageSize.toString()
         : searchConfig.maxResults.toString(),
     ...(searchConfig.deliveryDateEnd
       ? { ad_delivery_date_max: format(searchConfig.deliveryDateEnd, 'yyyy-MM-dd') }

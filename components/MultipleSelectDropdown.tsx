@@ -34,8 +34,15 @@ function MultipleSelectDropdown<T extends string | number>({
     >
       {items.map(({ value, label }) => (
         <Dropdown.Item key={value} onClick={() => handleItemClick(value)} className="flex gap-2">
-          <Checkbox name={`checkbox-${value}`} checked={selectedSet.has(value)} />
-          <Label htmlFor={`checkbox-${value}`}>{label}</Label>
+          <Checkbox
+            name={`checkbox-${value}`}
+            checked={selectedSet.has(value)}
+            readOnly
+            className="cursor-pointer"
+          />
+          <Label htmlFor={`checkbox-${value}`} className="cursor-pointer">
+            {label}
+          </Label>
         </Dropdown.Item>
       ))}
     </Dropdown>

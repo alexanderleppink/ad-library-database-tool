@@ -19,6 +19,15 @@ export const countryList = [
   'NZ',
   'AU'
 ] as const;
+
+export const nonEuCountries = [
+  'US',
+  'CA',
+  'GB',
+  'NZ',
+  'AU'
+] as const satisfies (typeof countryList)[number][];
+
 export const languagesList = ['nl', 'fr', 'it', 'es', 'de', 'sv', 'nb', 'da', 'fi', 'en'] as const;
 export const adStatusList = ['ALL', 'ACTIVE', 'INACTIVE'] as const;
 export type AdStatus = (typeof adStatusList)[number];

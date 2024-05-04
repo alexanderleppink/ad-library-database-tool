@@ -27,14 +27,10 @@ export async function searchAds(searchConfig: SearchConfig): Promise<SearchQuery
     method: 'GET'
   };
 
-  return fetch(`https://graph.facebook.com/ads_archive?${queryParams.toString()}`, requestOptions)
-    .then((response) => response.json())
-    .then((response) => {
-      if (response.error) {
-        throw new Error(`${response.error.message}\nTry to reduce page size to prevent this.`);
-      }
-      return response;
-    });
+  return fetch(
+    `https://graph.facebook.com/ads_archive?${queryParams.toString()}`,
+    requestOptions
+  ).then((response) => response.json());
 }
 
 function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {

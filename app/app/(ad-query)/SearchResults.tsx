@@ -50,7 +50,8 @@ function SearchResults({
       <Alert color="failure" className="mx-auto max-w-2xl">
         <div className="flex flex-col gap-2 items-center">
           <span>An error occurred while fetching the data</span>
-          <span className="whitespace-pre">{error}</span>
+          <span>{error}</span>
+          <span>You can try to reduce page size to prevent this</span>
         </div>
       </Alert>
     );

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import type { SearchCardItemData } from '@/app/app/(ad-query)/SearchResultCards';
-import { orderBy } from 'lodash-es';
+import { noop, orderBy } from 'lodash-es';
 import { SelectFormField, TextInputFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -39,25 +39,18 @@ export function useSortController(
   const sortDirection = formObject.watch('sortDirection');
   const minimumReach = formObject.watch('minimumReach');
   const productType = formObject.watch('productType');
+  const sortedData = useMemo(() => {
+    const filterMinReach = ({ eu_total_reach }: SearchCardItemData) =>
+      eu_total_reach >= minimumReach;
 
-  const filterMinReach = ({ eu_total_reach }: SearchCardItemData) => eu_total_reach >= minimumReach;
-
-  const filterProductType = ({ id }: SearchCardItemData) => {
-    const mediaData = mediaDataMap.get(id);
-    switch (productType) {
-      case 'shopify':
-        return !mediaData || !!mediaData.linkUrl?.includes('/products/');
-      case 'all':
-        return true;
-    }
-  };
+    return orderBy(unsortedData?.filter(filterMinReach) ?? [], [sortColumn], [sortDirection]);
+  }, [minimumReach, sortColumn, sortDirection, unsortedData]);
 
   return {
-    sortedData: orderBy(
-      unsortedData?.filter(filterMinReach).filter(filterProductType) ?? [],
-      [sortColumn],
-      [sortDirection]
-    ),
+    mediaFilters: {
+      productType
+    },
+    sortedData,
     sortController: <SortController formObject={formObject} />
   };
 }
@@ -69,9 +62,12 @@ interface SortControllerProps {
 function SortController({
   formObject: {
     register,
+    setValue,
+    getValues,
     formState: { errors }
   }
 }: SortControllerProps) {
+  const [minimumReach, setMinimumReach] = useState(getValues().minimumReach);
   return (
     <div className="flex gap-2 items-center">
       <SelectFormField {...register('sortColumn')} label="Sort by field" errors={errors}>
@@ -86,7 +82,11 @@ function SortController({
       </SelectFormField>
 
       <TextInputFormField
-        {...register('minimumReach')}
+        {...register('minimumReach', {
+          value: minimumReach,
+          onChange: (event) => setMinimumReach(event.target.value),
+          onBlur: (event) => setValue('minimumReach', event.target.value)
+        })}
         label="Minimum reach"
         type="number"
         errors={errors}

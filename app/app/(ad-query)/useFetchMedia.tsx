@@ -7,7 +7,7 @@ import ContainerWithVisibilityObserver from '@/components/ContainerWithVisibilit
 export type MediaData = Awaited<ReturnType<typeof fetchMediaData>>[number];
 
 const clusterFetchInterval = 20;
-const clusterSize = 30;
+export const clusterSize = 30;
 
 export function useFetchMedia() {
   const [mediaData, setMediaData] = useState<MediaData[]>([]);
@@ -20,6 +20,7 @@ export function useFetchMedia() {
   }, [mediaData]);
 
   const currentFetching = useRef(new Set<string>([]));
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchMedia = async (cluster: QueryResultData[]) => {
     const cleanedCluster = cluster.filter(
@@ -30,15 +31,19 @@ export function useFetchMedia() {
       return;
     }
 
+    setIsFetching(true);
     cleanedCluster.forEach(({ id }) => currentFetching.current.add(id));
 
     const result = await fetchMediaData(cleanedCluster);
 
     setMediaData((prev) => [...prev, ...result]);
     cleanedCluster.forEach(({ id }) => currentFetching.current.delete(id));
+    console.log('currentFetching.current.size', currentFetching.current);
+    setIsFetching(!!currentFetching.current.size);
   };
 
   return {
+    isFetching,
     mediaDataMap,
     fetchMedia
   };

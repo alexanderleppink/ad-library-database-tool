@@ -2,11 +2,11 @@ import React, { useEffect, useMemo } from 'react';
 import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
-import searchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
+import { usePrefetchShopifyProducts } from '@/app/app/(ad-query)/usePrefetchShopifyProducts';
 
 function SearchResults({
   queryResultData,
@@ -35,11 +35,21 @@ function SearchResults({
       .filter(({ domain }) => !isDomainExcluded(domain));
   }, [queryResultData, isDomainExcluded]);
 
-  const { mediaDataMap, fetchMedia } = useFetchMedia();
+  const { mediaDataMap, isFetching, fetchMedia } = useFetchMedia();
 
-  const { sortController, sortedData } = useSortController(resultsWithDomain, mediaDataMap);
+  const { sortController, sortedData, mediaFilters } = useSortController(
+    resultsWithDomain,
+    mediaDataMap
+  );
 
   const viewedAdsData = useViewedAds(sortedData);
+
+  const adjustedData = usePrefetchShopifyProducts(
+    sortedData,
+    fetchMedia,
+    mediaDataMap,
+    mediaFilters
+  );
 
   if (isLoading) {
     return (
@@ -61,7 +71,7 @@ function SearchResults({
     );
   }
 
-  if (!queryResultData || !sortedData) {
+  if (!queryResultData || !adjustedData) {
     return null;
   }
 
@@ -73,8 +83,8 @@ function SearchResults({
 
       <div className="flex items-center justify-between">
         <div>
-          Found <span className="font-bold text-green-700">{searchResultCards.length}</span> results
-          (<b>{queryResultData.length}</b> before filtering)
+          Found <span className="font-bold text-green-700">{adjustedData.length}</span> results (
+          <b>{queryResultData.length}</b> before filtering)
         </div>
 
         <div className="flex gap-2 items-center">
@@ -97,15 +107,17 @@ function SearchResults({
         </div>
       </div>
 
-      {!!sortedData.length ? (
-        <SearchResultCards
-          mediaDataMap={mediaDataMap}
-          fetchMedia={fetchMedia}
-          searchResults={sortedData}
-          viewedAdsData={viewedAdsData}
-        />
-      ) : (
-        <div className="flex justify-center text-center p-4">No results found</div>
+      <SearchResultCards
+        mediaDataMap={mediaDataMap}
+        fetchMedia={fetchMedia}
+        searchResults={adjustedData}
+        viewedAdsData={viewedAdsData}
+      />
+
+      {isFetching && (
+        <div className="flex p-8 items-center justify-center">
+          <Spinner size="lg" />
+        </div>
       )}
     </div>
   );

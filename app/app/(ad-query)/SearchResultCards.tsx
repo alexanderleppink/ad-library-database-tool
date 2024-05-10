@@ -76,7 +76,7 @@ function checkPassMediaFilters(
 ) {
   switch (productType) {
     case 'shopify':
-      return !!mediaData?.linkUrl?.includes('/products/');
+      return !mediaData || !!mediaData.linkUrl?.includes('/products/');
     case 'all':
       return true;
   }

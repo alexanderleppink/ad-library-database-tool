@@ -1,7 +1,6 @@
 import React, { memo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { Card, Spinner } from 'flowbite-react';
-import Link from 'next/link';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import { format } from 'date-fns';
 import clsx from 'clsx';
@@ -9,6 +8,7 @@ import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 import { FetchMediaClusterItem, useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
+import { numberWithThousandSeparator } from '@/utils/utils';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -116,10 +116,10 @@ function _SearchResultItem({
 
         <div className="font-medium flex gap-4">
           <span>
-            Reach: <b>{eu_total_reach}</b>
+            Reach: <b>{numberWithThousandSeparator(eu_total_reach)}</b>
           </span>
           <span>
-            Spent: <b>{(eu_total_reach * 0.011).toFixed(2).toLocaleString()}€</b>
+            Spent: <b>{numberWithThousandSeparator(Math.round(eu_total_reach * 0.011))}€</b>
           </span>
         </div>
 

@@ -51,6 +51,7 @@ function SearchResults({
         <div className="flex flex-col gap-2 items-center">
           <span>An error occurred while fetching the data</span>
           <span>{error}</span>
+          <span>You can try to reduce page size to prevent this</span>
         </div>
       </Alert>
     );

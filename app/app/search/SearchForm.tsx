@@ -27,9 +27,10 @@ export function useSearch() {
   return useSWRMutation(
     'search',
     async (_, { arg }: { arg: SearchConfig }) =>
-      await queryAllPages(searchAds)(arg, { totalLimit: arg.maxResults }).then((results) =>
-        arg.checkOnlyStartDate ? filterStartDate(results, arg) : results
-      )
+      await queryAllPages(searchAds)(arg, {
+        totalLimit: arg.maxResults,
+        pageSize: arg.pageSize
+      }).then((results) => (arg.checkOnlyStartDate ? filterStartDate(results, arg) : results))
   );
 }
 

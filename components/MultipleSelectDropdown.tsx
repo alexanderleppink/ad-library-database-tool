@@ -1,8 +1,10 @@
+import type { PropsWithChildren } from 'react';
 import React, { useMemo } from 'react';
-import { Checkbox, Dropdown, Label, TextInput } from 'flowbite-react';
+import { Checkbox, Dropdown, Label, TextInput, Tooltip } from 'flowbite-react';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
 
 interface MultipleSelectDropdownProps<T extends string | number> {
-  items: { value: T; label: string }[];
+  items: { value: T; label: string; tooltip?: string }[];
   value: T[];
   onChange: (value: T[]) => unknown;
   disabled?: boolean;
@@ -26,18 +28,41 @@ function MultipleSelectDropdown<T extends string | number>({
 
   return (
     <Dropdown
+      className="overflow-y-auto max-h-80"
       disabled={disabled}
       renderTrigger={() => <TextInput readOnly value={value.join(', ')} />}
       label=""
       dismissOnClick={false}
     >
-      {items.map(({ value, label }) => (
+      {items.map(({ value, label, tooltip }) => (
         <Dropdown.Item key={value} onClick={() => handleItemClick(value)} className="flex gap-2">
-          <Checkbox name={`checkbox-${value}`} checked={selectedSet.has(value)} />
-          <Label htmlFor={`checkbox-${value}`}>{label}</Label>
+          <TooltipWrapper tooltip={tooltip}>
+            <Checkbox
+              name={`checkbox-${value}`}
+              checked={selectedSet.has(value)}
+              readOnly
+              className="cursor-pointer"
+            />
+            <Label htmlFor={`checkbox-${value}`} className="cursor-pointer">
+              {label}
+            </Label>
+          </TooltipWrapper>
         </Dropdown.Item>
       ))}
     </Dropdown>
+  );
+}
+
+function TooltipWrapper({ tooltip, children }: PropsWithChildren<{ tooltip?: string }>) {
+  return !tooltip ? (
+    <>{children}</>
+  ) : (
+    <Tooltip content={tooltip}>
+      <div className="flex gap-2 items-center">
+        {children}
+        <QuestionMarkCircleIcon className="h-3" />
+      </div>
+    </Tooltip>
   );
 }
 

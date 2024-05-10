@@ -6,7 +6,7 @@ export interface QueryResultData {
   eu_total_reach: number;
 }
 
-export const pageSize = 4000;
+export const initialPageSize = 4000;
 export type ResultField = keyof QueryResultData;
 
 export interface QueryResult<T extends ResultField> {

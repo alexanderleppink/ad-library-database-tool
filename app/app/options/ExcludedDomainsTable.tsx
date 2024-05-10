@@ -58,6 +58,7 @@ function ExcludedDomainsTable({ excludedDomainsData }: ExcludedDomainsTableProps
           <Table.Row key={id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
             <Table.Cell className="p-4">
               <Checkbox
+                readOnly
                 checked={selectedDomains.includes(id)}
                 onClick={() => handleCheckboxClick(id)}
               />

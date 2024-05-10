@@ -4,6 +4,7 @@ import { orderBy } from 'lodash-es';
 import { SelectFormField, TextInputFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
+import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 
 type SortColumnProperty = keyof Pick<
   SearchCardItemData,
@@ -21,7 +22,10 @@ interface SortForm {
   productType: ProductType;
 }
 
-export function useSortController(unsortedData: SearchCardItemData[] | undefined) {
+export function useSortController(
+  unsortedData: SearchCardItemData[] | undefined,
+  mediaDataMap: Map<string, MediaData>
+) {
   const formObject = useForm<SortForm>({
     defaultValues: {
       sortColumn: 'ad_delivery_start_time',
@@ -38,11 +42,22 @@ export function useSortController(unsortedData: SearchCardItemData[] | undefined
 
   const filterMinReach = ({ eu_total_reach }: SearchCardItemData) => eu_total_reach >= minimumReach;
 
+  const filterProductType = ({ id }: SearchCardItemData) => {
+    const mediaData = mediaDataMap.get(id);
+    switch (productType) {
+      case 'shopify':
+        return !mediaData || !!mediaData.linkUrl?.includes('/products/');
+      case 'all':
+        return true;
+    }
+  };
+
   return {
-    mediaFilters: {
-      productType
-    },
-    sortedData: orderBy(unsortedData, [sortColumn], [sortDirection]).filter(filterMinReach),
+    sortedData: orderBy(
+      unsortedData?.filter(filterMinReach).filter(filterProductType) ?? [],
+      [sortColumn],
+      [sortDirection]
+    ),
     sortController: <SortController formObject={formObject} />
   };
 }

@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
-import type { SearchCardItemData } from '@/app/app/(ad-query)/SearchResultCards';
+import searchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
+import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 
 function SearchResults({
   queryResultData,
@@ -24,8 +25,6 @@ function SearchResults({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryResultData]);
 
-  const [filteredResults, setFilteredResults] = useState<SearchCardItemData[]>();
-
   const resultsWithDomain = useMemo(() => {
     return queryResultData
       ?.filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
@@ -36,7 +35,9 @@ function SearchResults({
       .filter(({ domain }) => !isDomainExcluded(domain));
   }, [queryResultData, isDomainExcluded]);
 
-  const { sortController, sortedData, mediaFilters } = useSortController(resultsWithDomain);
+  const { mediaDataMap, fetchMedia } = useFetchMedia();
+
+  const { sortController, sortedData } = useSortController(resultsWithDomain, mediaDataMap);
 
   const viewedAdsData = useViewedAds(sortedData);
 
@@ -72,8 +73,8 @@ function SearchResults({
 
       <div className="flex items-center justify-between">
         <div>
-          Found <span className="font-bold text-green-700">{filteredResults?.length ?? 0}</span>{' '}
-          results (<b>{queryResultData.length}</b> before filtering)
+          Found <span className="font-bold text-green-700">{searchResultCards.length}</span> results
+          (<b>{queryResultData.length}</b> before filtering)
         </div>
 
         <div className="flex gap-2 items-center">
@@ -98,8 +99,8 @@ function SearchResults({
 
       {!!sortedData.length ? (
         <SearchResultCards
-          onFilteredResultsChange={setFilteredResults}
-          mediaFilters={mediaFilters}
+          mediaDataMap={mediaDataMap}
+          fetchMedia={fetchMedia}
           searchResults={sortedData}
           viewedAdsData={viewedAdsData}
         />

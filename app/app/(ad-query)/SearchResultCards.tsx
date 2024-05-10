@@ -83,6 +83,7 @@ function _SearchResultItem({
           <EyeSlashIcon className="w-20 h-20 text-gray-700" />
         </div>
       )}
+
       <Card
         renderImage={() => (
           <div className="w-full h-48 shrink-0 flex justify-center items-center">
@@ -115,6 +116,19 @@ function _SearchResultItem({
               <span>No website linked</span>
             )}
           </h4>
+
+          {mediaData?.linkUrl ? (
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={mediaData.linkUrl}
+              className="overflow-hidden whitespace-nowrap text-ellipsis truncate hover:underline"
+            >
+              {mediaData.linkUrl.replace(/https?:\/\//, '')}
+            </a>
+          ) : (
+            <div>Offer url loading...</div>
+          )}
 
           <div className="text-gray-500 text-sm">
             Started: {format(ad_delivery_start_time, 'MMM dd, yyyy')}

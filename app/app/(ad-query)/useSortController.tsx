@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import type { SearchCardItemData } from '@/app/app/(ad-query)/SearchResultCards';
-import { noop, orderBy } from 'lodash-es';
+import { orderBy } from 'lodash-es';
 import { SelectFormField, TextInputFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -67,7 +67,6 @@ function SortController({
     formState: { errors }
   }
 }: SortControllerProps) {
-  const [minimumReach, setMinimumReach] = useState(getValues().minimumReach);
   return (
     <div className="flex gap-2 items-center">
       <SelectFormField {...register('sortColumn')} label="Sort by field" errors={errors}>
@@ -82,11 +81,11 @@ function SortController({
       </SelectFormField>
 
       <TextInputFormField
-        {...register('minimumReach', {
-          value: minimumReach,
-          onChange: (event) => setMinimumReach(event.target.value),
-          onBlur: (event) => setValue('minimumReach', event.target.value)
-        })}
+        {...{
+          name: 'minimumReach',
+          defaultValue: getValues().minimumReach,
+          onBlur: (event) => setValue('minimumReach', Number(event.target.value))
+        }}
         label="Minimum reach"
         type="number"
         errors={errors}

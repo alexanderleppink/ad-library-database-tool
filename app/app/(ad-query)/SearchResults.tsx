@@ -115,8 +115,9 @@ function SearchResults({
       />
 
       {isFetching && (
-        <div className="flex p-8 items-center justify-center">
+        <div className="flex flex-col p-8 items-center justify-center gap-8">
           <Spinner size="lg" />
+          <span>Fetching offer urls & media...</span>
         </div>
       )}
     </div>

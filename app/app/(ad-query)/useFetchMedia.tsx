@@ -39,7 +39,6 @@ export function useFetchMedia() {
 
     setMediaData((prev) => [...prev, ...result]);
     cleanedCluster.forEach(({ id }) => currentFetching.current.delete(id));
-    console.log('currentFetching.current.size', currentFetching.current);
     setIsFetching(!!currentFetching.current.size);
   };
 

@@ -23,7 +23,12 @@ export function usePrefetchShopifyProducts(
     ).map((data) => data.map(({ data }) => data));
 
     console.info(`Prefetch ${groupedData.length} groups of ads`);
-    groupedData.forEach((group) => fetchMedia(group));
+    // synchronous because next.js doesn't support concurrent server actions
+    Promise.resolve().then(async () => {
+      for (const group of groupedData) {
+        await fetchMedia(group);
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 

@@ -1,5 +1,9 @@
 'use server';
 
+/**
+ * In server because of CORS
+ */
+
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { facebookSnapshotRequest } from '@/app/app/(ad-query)/facebookSnapshotRequest';
 

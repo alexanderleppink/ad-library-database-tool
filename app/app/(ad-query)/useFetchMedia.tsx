@@ -31,6 +31,7 @@ export function useFetchMedia() {
       return;
     }
 
+    console.info(`Fetching media for ${cleanedCluster.length} ads`);
     setIsFetching(true);
     cleanedCluster.forEach(({ id }) => currentFetching.current.add(id));
 

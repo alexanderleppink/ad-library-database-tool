@@ -12,10 +12,13 @@ type SortColumnProperty = keyof Pick<
 
 type SortDirection = 'asc' | 'desc';
 
+type ProductType = 'shopify' | 'all';
+
 interface SortForm {
   sortDirection: SortDirection;
   sortColumn: SortColumnProperty;
   minimumReach: number;
+  productType: ProductType;
 }
 
 export function useSortController(unsortedData: SearchCardItemData[] | undefined) {
@@ -23,18 +26,30 @@ export function useSortController(unsortedData: SearchCardItemData[] | undefined
     defaultValues: {
       sortColumn: 'ad_delivery_start_time',
       sortDirection: 'desc',
-      minimumReach: 25000
+      minimumReach: 25000,
+      productType: 'all'
     }
   });
 
   const sortColumn = formObject.watch('sortColumn');
   const sortDirection = formObject.watch('sortDirection');
   const minimumReach = formObject.watch('minimumReach');
+  const productType = formObject.watch('productType');
+
+  const filterMinReach = ({ eu_total_reach }: SearchCardItemData) => eu_total_reach >= minimumReach;
+  const filterProductType = ({ domain }: SearchCardItemData) => {
+    switch (productType) {
+      case 'shopify':
+        return !!domain?.includes('/products/');
+      case 'all':
+        return true;
+    }
+  };
 
   return {
-    sortedData: orderBy(unsortedData, [sortColumn], [sortDirection]).filter(
-      ({ eu_total_reach }) => eu_total_reach >= minimumReach
-    ),
+    sortedData: orderBy(unsortedData, [sortColumn], [sortDirection])
+      .filter(filterMinReach)
+      .filter(filterProductType),
     sortController: <SortController formObject={formObject} />
   };
 }
@@ -68,6 +83,11 @@ function SortController({
         type="number"
         errors={errors}
       />
+
+      <SelectFormField {...register('productType')} label="Product type" errors={errors}>
+        <option value={'all' satisfies ProductType}>All</option>
+        <option value={'shopify' satisfies ProductType}>Shopify</option>
+      </SelectFormField>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { Card, Spinner } from 'flowbite-react';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
@@ -9,6 +9,7 @@ import { FetchMediaClusterItem, useFetchMedia } from '@/app/app/(ad-query)/useFe
 import { EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 import { numberWithThousandSeparator } from '@/utils/utils';
+import type { useSortController } from '@/app/app/(ad-query)/useSortController';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -17,20 +18,38 @@ export interface SearchCardItemData extends QueryResultData {
 export interface SearchResultsCardsProps {
   viewedAdsData: ReturnType<typeof useViewedAds>;
   searchResults: SearchCardItemData[];
+  mediaFilters: ReturnType<typeof useSortController>['mediaFilters'];
+  onFilteredResultsChange: (results: SearchCardItemData[]) => unknown;
 }
 
 function SearchResultCards({
   searchResults,
+  mediaFilters,
+  onFilteredResultsChange,
   viewedAdsData: { viewedAds, addNewViewedAd }
 }: SearchResultsCardsProps) {
   const { mediaDataMap, fetchMedia } = useFetchMedia();
   const { isDomainFreshlyExcluded, addExcludedDomain, removeExcludedDomain } = useExcludedDomains();
+  const filteredSearchResults = useMemo(
+    () =>
+      searchResults.filter((item) =>
+        checkPassMediaFilters(mediaFilters, mediaDataMap.get(item.id))
+      ),
+    [mediaDataMap, mediaFilters, searchResults]
+  );
+  useEffect(() => {
+    onFilteredResultsChange(filteredSearchResults);
+  }, [filteredSearchResults, onFilteredResultsChange]);
+
+  if (!filteredSearchResults.length) {
+    return <div className="flex justify-center text-center p-4">No results found</div>;
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 md:gap-4">
-      {searchResults.map((result, index) => (
+      {filteredSearchResults.map((result, index) => (
         <FetchMediaClusterItem
-          key={result.id}
+          key={`${result.id}-${index}`}
           index={index}
           allData={searchResults}
           onEnterView={fetchMedia}
@@ -49,6 +68,18 @@ function SearchResultCards({
       ))}
     </div>
   );
+}
+
+function checkPassMediaFilters(
+  { productType }: ReturnType<typeof useSortController>['mediaFilters'],
+  mediaData: MediaData | undefined
+) {
+  switch (productType) {
+    case 'shopify':
+      return !!mediaData?.linkUrl?.includes('/products/');
+    case 'all':
+      return true;
+  }
 }
 
 function _SearchResultItem({

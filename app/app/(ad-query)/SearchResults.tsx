@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Spinner } from 'flowbite-react';
 import { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
+import type { SearchCardItemData } from '@/app/app/(ad-query)/SearchResultCards';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
@@ -23,6 +24,8 @@ function SearchResults({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryResultData]);
 
+  const [filteredResults, setFilteredResults] = useState<SearchCardItemData[]>();
+
   const resultsWithDomain = useMemo(() => {
     return queryResultData
       ?.filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
@@ -33,7 +36,7 @@ function SearchResults({
       .filter(({ domain }) => !isDomainExcluded(domain));
   }, [queryResultData, isDomainExcluded]);
 
-  const { sortController, sortedData } = useSortController(resultsWithDomain);
+  const { sortController, sortedData, mediaFilters } = useSortController(resultsWithDomain);
 
   const viewedAdsData = useViewedAds(sortedData);
 
@@ -69,8 +72,8 @@ function SearchResults({
 
       <div className="flex items-center justify-between">
         <div>
-          Found <span className="font-bold text-green-700">{sortedData.length}</span> results (
-          <b>{queryResultData.length}</b> before filtering)
+          Found <span className="font-bold text-green-700">{filteredResults?.length ?? 0}</span>{' '}
+          results (<b>{queryResultData.length}</b> before filtering)
         </div>
 
         <div className="flex gap-2 items-center">
@@ -94,7 +97,12 @@ function SearchResults({
       </div>
 
       {!!sortedData.length ? (
-        <SearchResultCards searchResults={sortedData} viewedAdsData={viewedAdsData} />
+        <SearchResultCards
+          onFilteredResultsChange={setFilteredResults}
+          mediaFilters={mediaFilters}
+          searchResults={sortedData}
+          viewedAdsData={viewedAdsData}
+        />
       ) : (
         <div className="flex justify-center text-center p-4">No results found</div>
       )}

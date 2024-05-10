@@ -37,19 +37,12 @@ export function useSortController(unsortedData: SearchCardItemData[] | undefined
   const productType = formObject.watch('productType');
 
   const filterMinReach = ({ eu_total_reach }: SearchCardItemData) => eu_total_reach >= minimumReach;
-  const filterProductType = ({ domain }: SearchCardItemData) => {
-    switch (productType) {
-      case 'shopify':
-        return !!domain?.includes('/products/');
-      case 'all':
-        return true;
-    }
-  };
 
   return {
-    sortedData: orderBy(unsortedData, [sortColumn], [sortDirection])
-      .filter(filterMinReach)
-      .filter(filterProductType),
+    mediaFilters: {
+      productType
+    },
+    sortedData: orderBy(unsortedData, [sortColumn], [sortDirection]).filter(filterMinReach),
     sortController: <SortController formObject={formObject} />
   };
 }

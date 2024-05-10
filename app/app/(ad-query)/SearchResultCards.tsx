@@ -114,8 +114,13 @@ function _SearchResultItem({
           </div>
         </div>
 
-        <div className="font-medium">
-          Reach: <b>{eu_total_reach}</b>
+        <div className="font-medium flex gap-4">
+          <span>
+            Reach: <b>{eu_total_reach}</b>
+          </span>
+          <span>
+            Spent: <b>{(eu_total_reach * 0.011).toFixed(2).toLocaleString()}€</b>
+          </span>
         </div>
 
         <a

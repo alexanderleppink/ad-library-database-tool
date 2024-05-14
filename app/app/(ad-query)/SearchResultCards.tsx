@@ -140,7 +140,7 @@ function _SearchResultItem({
             Reach: <b>{numberWithThousandSeparator(eu_total_reach)}</b>
           </span>
           <span>
-            Spent: <b>{numberWithThousandSeparator(Math.round(eu_total_reach * 0.011))}€</b>
+            Spent: <b>€{numberWithThousandSeparator(Math.round(eu_total_reach * 0.02))}</b>
           </span>
         </div>
 

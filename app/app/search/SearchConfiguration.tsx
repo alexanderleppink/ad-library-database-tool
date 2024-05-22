@@ -9,12 +9,11 @@ import {
   nonEuCountries
 } from '@/app/app/search/search.types';
 import { Button, Card, Checkbox, Datepicker, Tooltip } from 'flowbite-react';
-import { format } from 'date-fns';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
 import { initialPageSize } from '@/app/app/(ad-query)/adQuery.types';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { displayDate } from "@/utils/utils";
+import { displayDate } from '@/utils/utils';
 
 interface SearchConfigurationProps {
   formObject: UseFormReturn<SearchConfig>;

@@ -10,6 +10,7 @@ const ContainerWithVisibilityObserver = ({
   const elementRef = useRef(null);
 
   useEffect(() => {
+    const element = elementRef.current;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -18,15 +19,16 @@ const ContainerWithVisibilityObserver = ({
       });
     });
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
+    if (element) {
+      observer.observe(element);
     }
 
     return () => {
-      if (elementRef.current) {
-        observer.unobserve(elementRef.current);
+      if (element) {
+        observer.unobserve(element);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <div ref={elementRef}>{children}</div>;

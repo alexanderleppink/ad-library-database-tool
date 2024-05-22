@@ -7,6 +7,7 @@ import { useSortController } from '@/app/app/(ad-query)/useSortController';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { usePrefetchShopifyProducts } from '@/app/app/(ad-query)/usePrefetchShopifyProducts';
+import { useSelectedAdRows } from '@/app/app/(ad-query)/useSelectedAdRows';
 
 function SearchResults({
   queryResultData,
@@ -43,6 +44,7 @@ function SearchResults({
   );
 
   const viewedAdsData = useViewedAds(sortedData);
+  const selectedAdRows = useSelectedAdRows(sortedData);
 
   const adjustedData = usePrefetchShopifyProducts(
     sortedData,
@@ -96,12 +98,12 @@ function SearchResults({
           ) : excludedDomainsResponse.error ? (
             <Alert color="failure">Failed to load excluded domains!</Alert>
           ) : null}
-          {viewedAdsData.isLoading ? (
+          {viewedAdsData.isLoading || selectedAdRows.isLoading ? (
             <div className="flex items-center space-x-2">
               <Spinner aria-label="loading" />
               <span>Loading viewed ads...</span>
             </div>
-          ) : viewedAdsData.error ? (
+          ) : viewedAdsData.error || selectedAdRows.error ? (
             <Alert color="failure">Failed to load viewed ads!</Alert>
           ) : null}
         </div>

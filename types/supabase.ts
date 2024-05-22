@@ -29,6 +29,41 @@ export type Database = {
           }
         ];
       };
+      selected_ad_rows: {
+        Row: {
+          ad_id: string;
+          country: string;
+          created_at: string;
+          date: string | null;
+          id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          ad_id: string;
+          country: string;
+          created_at?: string;
+          date?: string | null;
+          id?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          ad_id?: string;
+          country?: string;
+          created_at?: string;
+          date?: string | null;
+          id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'selected_ad_rows_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
       users: {
         Row: {
           created_at: string | null;
@@ -91,6 +126,18 @@ export type Database = {
           ids: string[];
         };
         Returns: string[];
+      };
+      get_selected_ad_rows: {
+        Args: {
+          ad_ids: string[];
+          user_id: string;
+        };
+        Returns: {
+          ad_id: string;
+          ad_row_id: string;
+          country: string;
+          date: string;
+        }[];
       };
     };
     Enums: {

@@ -27,8 +27,12 @@ export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   );
 
   const addNewViewedAd = async (id: string) => {
+    if (!user) {
+      return;
+    }
+
     setNewViewedAdsSet((prev) => new Set([...prev, id]));
-    await supabase.from('viewed_ads').insert({ user: user?.id, id });
+    await supabase.from('viewed_ads').insert({ user_id: user.id, id });
   };
 
   return {

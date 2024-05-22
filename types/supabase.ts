@@ -7,22 +7,22 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          user: string | null;
+          user_id: string | null;
         };
         Insert: {
           created_at?: string;
           id: string;
-          user?: string | null;
+          user_id?: string | null;
         };
         Update: {
           created_at?: string;
           id?: string;
-          user?: string | null;
+          user_id?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: 'public_excluded_domains_user_fkey';
-            columns: ['user'];
+            columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
@@ -59,22 +59,22 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          user: string | null;
+          user_id: string;
         };
         Insert: {
           created_at?: string;
           id: string;
-          user?: string | null;
+          user_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          user?: string | null;
+          user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'public_viewed_ads_user_fkey';
-            columns: ['user'];
+            foreignKeyName: 'viewed_ads_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];

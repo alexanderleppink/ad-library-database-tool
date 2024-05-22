@@ -60,7 +60,7 @@ function useExcludedDomainsInternal() {
     async (domain: string) => {
       const topLevelDomain = extractTopLevelDomain(domain) || domain;
       setFreshlyExcludedDomains((prev) => new Set([...prev, topLevelDomain]));
-      await supabase.from('excluded_domains').insert({ user: user?.id, id: topLevelDomain });
+      await supabase.from('excluded_domains').insert({ user_id: user?.id, id: topLevelDomain });
     },
     [supabase, user?.id]
   );

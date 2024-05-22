@@ -177,13 +177,16 @@ function _SearchResultItem({
             rows={selectedAdRows}
           />
         ) : (
-          <div className="flex items-center gap-2 h-[34px] cursor-pointer mr-auto">
+          <div className="flex items-center gap-2 h-[34px] mr-auto">
             <Checkbox
+              className="cursor-pointer"
               id={`${id}-selected`}
               checked={showSelectedAdRows}
               onChange={() => setShowSelectedAdRows(true)}
             />
-            <Label htmlFor={`${id}-selected`}>Select</Label>
+            <Label className="cursor-pointer" htmlFor={`${id}-selected`}>
+              Select
+            </Label>
           </div>
         )}
       </Card>

@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
 import { groupBy, sortBy } from 'lodash-es';
-import { SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
+import type { SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
 
 export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) {
   // sort to ensure consistent query key
@@ -16,7 +16,7 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
   const supabase = createClientComponentClient<Database>();
   const user = useUser();
   const { data: supabaseReponse, ...response } = useSWR(
-    adIds && user ? ['selectedAdRows', ...adIds] : null,
+    adIds?.length && user ? ['selectedAdRows', ...adIds] : null,
     async () =>
       await supabase
         .rpc('get_selected_ad_rows', { ad_ids: adIds!, user_id: user?.id! })
@@ -33,7 +33,7 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
       return;
     }
 
-    await supabase.from('selected_ad_rows').upsert(data);
+    await supabase.from('selected_ad_rows').upsert({ ...data, user_id: user.id });
     await response.mutate((prev) => {
       if (!prev?.data) {
         return undefined;

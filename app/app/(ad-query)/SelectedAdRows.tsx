@@ -1,22 +1,27 @@
 import React from 'react';
 import type { GetSelectedAdRowsReturns, SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
-import { Button, Datepicker, Dropdown, Select } from 'flowbite-react';
+import { Button, Datepicker, Select } from 'flowbite-react';
 import { z } from 'zod';
 import { ensureMinOneItem } from '@/utils/typeUtils';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import SaveIcon from '@/components/icons/SaveIcon';
 import { fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { formatISO } from 'date-fns';
 import { v4 } from 'uuid';
+import { PlusIcon } from '@heroicons/react/16/solid';
+import { mapError } from '@/utils/formHook';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 interface SelectedAdRowsProps {
+  adId: string;
   rows: GetSelectedAdRowsReturns;
   onSelectedAdRowUpdate: (data: SelectedAdRowUpsert) => unknown;
   onSelectedAdRowDelete: (id: string) => unknown;
 }
 
 function SelectedAdRows({
+  adId,
   rows,
   onSelectedAdRowDelete,
   onSelectedAdRowUpdate
@@ -25,6 +30,7 @@ function SelectedAdRows({
     <div className="flex flex-col gap-2">
       {rows.map((row) => (
         <SelectedAdRow
+          adId={adId}
           key={row.ad_row_id}
           rowData={row}
           onRowUpsert={onSelectedAdRowUpdate}
@@ -33,6 +39,7 @@ function SelectedAdRows({
       ))}
 
       <SelectedAdRow
+        adId={adId}
         rowData={null}
         onRowUpsert={onSelectedAdRowUpdate}
         onRowDelete={onSelectedAdRowDelete}
@@ -71,41 +78,73 @@ function createDefaultSelectedAdRow(
 }
 
 function SelectedAdRow({
+  adId,
   rowData,
   onRowUpsert,
   onRowDelete
 }: {
+  adId: string;
   rowData: GetSelectedAdRowsReturns[number] | null;
   onRowUpsert: (data: SelectedAdRowUpsert) => unknown;
   onRowDelete: (id: string) => unknown;
 }) {
-  const { register, handleSubmit } = useForm({
+  const {
+    reset,
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, defaultValues }
+  } = useForm({
+    resolver: zodResolver(SelectedAdRowSchema),
     defaultValues: createDefaultSelectedAdRow(rowData)
   });
 
   const onSubmit = ({ country, date: dateTime }: SelectedAdRowForm) => {
-    const date = formatISO(toZonedTime(dateTime, 'UTC'), { representation: 'date' });
+    const date = formatISO(fromZonedTime(dateTime, 'UTC'), { representation: 'date' });
     const id = rowData?.ad_row_id ?? v4();
     onRowUpsert({
       id,
-      ad_id: rowData?.ad_id ?? '',
+      ad_id: adId,
       country,
       date
     });
+
+    if (!rowData) {
+      reset(createDefaultSelectedAdRow(null));
+    }
   };
 
   return (
     <div className="flex gap-0.5">
-      <Select className="flex-1 w-0" sizing="sm" {...register('country')}>
+      <Select
+        className="flex-1 w-0"
+        sizing="sm"
+        {...register('country')}
+        color={mapError(errors?.country)}
+      >
         {availableCountries.map((country) => (
           <option key={country.code} value={country.code}>
             {country.name}
           </option>
         ))}
       </Select>
-      <Datepicker {...register('date')} sizing="sm" className="flex-1 w-0" placeholder="Date" />
+      <Controller
+        control={control}
+        render={({ field: { value, onChange }, fieldState: { error } }) => (
+          <Datepicker
+            key={defaultValues?.date?.getTime()}
+            defaultDate={value}
+            onSelectedDateChanged={onChange}
+            sizing="sm"
+            className="flex-1 w-0"
+            placeholder="Date"
+            color={mapError(error)}
+          />
+        )}
+        name="date"
+      />
       <Button className="shrink-0" size="xs" color="blue" onClick={handleSubmit(onSubmit)}>
-        <SaveIcon className="w-3 h-3" />
+        {rowData ? <SaveIcon className="w-3 h-3" /> : <PlusIcon className="w-3 h-3" />}
       </Button>
       <Button
         className="shrink-0"

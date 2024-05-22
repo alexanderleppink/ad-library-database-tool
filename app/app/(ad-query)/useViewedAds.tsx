@@ -14,7 +14,7 @@ export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   const supabase = createClientComponentClient<Database>();
   const user = useUser();
   const { data: supabaseReponse, ...response } = useSWR(
-    adIds ? ['viewedAds', ...adIds] : null,
+    adIds?.length ? ['viewedAds', ...adIds] : null,
     async () => await supabase.rpc('ad_id_in', { ids: adIds || [] }).limit(100000)
   );
 

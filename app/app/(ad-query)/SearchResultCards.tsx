@@ -171,16 +171,17 @@ function _SearchResultItem({
 
         {!!selectedAdRows.length || showSelectedAdRows ? (
           <SelectedAdRows
+            adId={id}
             onSelectedAdRowDelete={onSelectedAdRowDelete}
             onSelectedAdRowUpdate={onSelectedAdRowUpdate}
             rows={selectedAdRows}
           />
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 h-[34px] cursor-pointer mr-auto">
             <Checkbox
               id={`${id}-selected`}
               checked={showSelectedAdRows}
-              onClick={() => setShowSelectedAdRows(true)}
+              onChange={() => setShowSelectedAdRows(true)}
             />
             <Label htmlFor={`${id}-selected`}>Select</Label>
           </div>

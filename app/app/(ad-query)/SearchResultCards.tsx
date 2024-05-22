@@ -107,6 +107,7 @@ function _SearchResultItem({
         )}
         className={clsx({
           'bg-gray-200': isViewedAd,
+          'bg-gray-300': selectedAdRows.length,
           'opacity-40': hasFreshlyExcludedDomain
         })}
       >
@@ -185,7 +186,7 @@ function _SearchResultItem({
               onChange={() => setShowSelectedAdRows(true)}
             />
             <Label className="cursor-pointer" htmlFor={`${id}-selected`}>
-              Select
+              Selected
             </Label>
           </div>
         )}

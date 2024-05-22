@@ -77,8 +77,8 @@ function _SearchResultItem({
   onSelectedAdRowUpdate,
   onSelectedAdRowDelete
 }: {
-  onSelectedAdRowUpdate: (data: SelectedAdRowUpsert) => unknown;
-  onSelectedAdRowDelete: (id: string) => unknown;
+  onSelectedAdRowUpdate: (data: SelectedAdRowUpsert) => Promise<unknown>;
+  onSelectedAdRowDelete: (id: string) => Promise<unknown>;
   selectedAdRows: GetSelectedAdRowsReturns;
   hasFreshlyExcludedDomain: boolean;
   queryResultData: SearchCardItemData;

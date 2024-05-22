@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { ensureMinOneItem } from '@/utils/typeUtils';
 import { Controller, useForm } from 'react-hook-form';
 import SaveIcon from '@/components/icons/SaveIcon';
-import { fromZonedTime, toZonedTime } from 'date-fns-tz';
+import { fromZonedTime } from 'date-fns-tz';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { formatISO } from 'date-fns';
 import { v4 } from 'uuid';
@@ -16,8 +16,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 interface SelectedAdRowsProps {
   adId: string;
   rows: GetSelectedAdRowsReturns;
-  onSelectedAdRowUpdate: (data: SelectedAdRowUpsert) => unknown;
-  onSelectedAdRowDelete: (id: string) => unknown;
+  onSelectedAdRowUpdate: (data: SelectedAdRowUpsert) => Promise<unknown>;
+  onSelectedAdRowDelete: (id: string) => Promise<unknown>;
 }
 
 function SelectedAdRows({
@@ -85,8 +85,8 @@ function SelectedAdRow({
 }: {
   adId: string;
   rowData: GetSelectedAdRowsReturns[number] | null;
-  onRowUpsert: (data: SelectedAdRowUpsert) => unknown;
-  onRowDelete: (id: string) => unknown;
+  onRowUpsert: (data: SelectedAdRowUpsert) => Promise<unknown>;
+  onRowDelete: (id: string) => Promise<unknown>;
 }) {
   const {
     reset,
@@ -99,10 +99,10 @@ function SelectedAdRow({
     defaultValues: createDefaultSelectedAdRow(rowData)
   });
 
-  const onSubmit = ({ country, date: dateTime }: SelectedAdRowForm) => {
+  const onSubmit = async ({ country, date: dateTime }: SelectedAdRowForm) => {
     const date = formatISO(fromZonedTime(dateTime, 'UTC'), { representation: 'date' });
     const id = rowData?.ad_row_id ?? v4();
-    onRowUpsert({
+    await onRowUpsert({
       id,
       ad_id: adId,
       country,

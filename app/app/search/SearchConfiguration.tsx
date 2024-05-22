@@ -14,6 +14,7 @@ import { XCircleIcon } from '@heroicons/react/24/solid';
 import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
 import { initialPageSize } from '@/app/app/(ad-query)/adQuery.types';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { displayDate } from "@/utils/utils";
 
 interface SearchConfigurationProps {
   formObject: UseFormReturn<SearchConfig>;
@@ -168,12 +169,5 @@ function DatepickerWithClearButton({
     </div>
   );
 }
-
-const displayDate = (date: Date | undefined | string | null) => {
-  if (date instanceof Date) {
-    return format(date, 'MMM dd, yyyy');
-  }
-  return '';
-};
 
 export default SearchConfiguration;

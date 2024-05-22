@@ -34,7 +34,7 @@ export type Database = {
           ad_id: string;
           country: string;
           created_at: string;
-          date: string | null;
+          date: string;
           id: string;
           user_id: string | null;
         };
@@ -42,7 +42,7 @@ export type Database = {
           ad_id: string;
           country: string;
           created_at?: string;
-          date?: string | null;
+          date: string;
           id?: string;
           user_id?: string | null;
         };
@@ -50,7 +50,7 @@ export type Database = {
           ad_id?: string;
           country?: string;
           created_at?: string;
-          date?: string | null;
+          date?: string;
           id?: string;
           user_id?: string | null;
         };

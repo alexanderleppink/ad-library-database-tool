@@ -5,9 +5,7 @@ import { useMemo } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
 import { groupBy, sortBy } from 'lodash-es';
-import { v4 } from 'uuid';
-import { toZonedTime } from 'date-fns-tz';
-import { formatISO } from 'date-fns';
+import { SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
 
 export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) {
   // sort to ensure consistent query key
@@ -30,16 +28,12 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
     [supabaseReponse]
   );
 
-  const addNew = async (adId: string, country: string, dateTime: Date) => {
+  const upsertRow = async (data: SelectedAdRowUpsert) => {
     if (!user) {
       return;
     }
 
-    const date = formatISO(toZonedTime(dateTime, 'UTC'), { representation: 'date' });
-    const id = v4();
-    await supabase
-      .from('selected_ad_rows')
-      .insert({ user_id: user.id, id, ad_id: adId, country, date });
+    await supabase.from('selected_ad_rows').upsert(data);
     await response.mutate((prev) => {
       if (!prev?.data) {
         return undefined;
@@ -47,7 +41,24 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
 
       return {
         ...prev,
-        data: [...prev.data, { ad_row_id: id, ad_id: adId, country, date }]
+        data: [
+          ...prev.data.filter(({ ad_row_id }) => ad_row_id !== data.id),
+          { ad_row_id: data.id, ad_id: data.ad_id, country: data.country, date: data.date }
+        ]
+      };
+    });
+  };
+
+  const deleteRow = async (adRowId: string) => {
+    await supabase.from('selected_ad_rows').delete().eq('id', adRowId);
+    await response.mutate((prev) => {
+      if (!prev?.data) {
+        return undefined;
+      }
+
+      return {
+        ...prev,
+        data: prev.data.filter((row) => row.ad_row_id !== adRowId)
       };
     });
   };
@@ -55,6 +66,7 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
   return {
     ...response,
     data: selectedAdRows,
-    addNew
+    upsertRow,
+    deleteRow
   };
 }

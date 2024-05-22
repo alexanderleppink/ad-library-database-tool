@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
-import { Card, Spinner } from 'flowbite-react';
+import { Card, Checkbox, Label, Spinner } from 'flowbite-react';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
 import { format } from 'date-fns';
 import clsx from 'clsx';
@@ -9,6 +9,9 @@ import { FetchMediaClusterItem } from '@/app/app/(ad-query)/useFetchMedia';
 import { EyeSlashIcon, PhotoIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 import { numberWithThousandSeparator } from '@/utils/utils';
+import type { useSelectedAdRows } from '@/app/app/(ad-query)/useSelectedAdRows';
+import type { GetSelectedAdRowsReturns, SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
+import SelectedAdRows from '@/app/app/(ad-query)/SelectedAdRows';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
@@ -16,6 +19,7 @@ export interface SearchCardItemData extends QueryResultData {
 
 export interface SearchResultsCardsProps {
   viewedAdsData: ReturnType<typeof useViewedAds>;
+  selectedAdRowsData: ReturnType<typeof useSelectedAdRows>;
   searchResults: SearchCardItemData[];
   fetchMedia: ReturnType<typeof useFetchMedia>['fetchMedia'];
   mediaDataMap: Map<string, MediaData>;
@@ -25,7 +29,8 @@ function SearchResultCards({
   searchResults,
   fetchMedia,
   mediaDataMap,
-  viewedAdsData: { viewedAds, addNewViewedAd }
+  viewedAdsData: { viewedAds, addNewViewedAd },
+  selectedAdRowsData
 }: SearchResultsCardsProps) {
   const { isDomainFreshlyExcluded, addExcludedDomain, removeExcludedDomain } = useExcludedDomains();
 
@@ -43,6 +48,9 @@ function SearchResultCards({
           onEnterView={fetchMedia}
         >
           <SearchResultItem
+            selectedAdRows={selectedAdRowsData.data[result.id] || []}
+            onSelectedAdRowDelete={selectedAdRowsData.deleteRow}
+            onSelectedAdRowUpdate={selectedAdRowsData.upsertRow}
             onDomainExclude={(id, exclude) =>
               exclude ? addExcludedDomain(id) : removeExcludedDomain(id)
             }
@@ -64,8 +72,14 @@ function _SearchResultItem({
   onView,
   mediaData,
   onDomainExclude,
-  hasFreshlyExcludedDomain
+  hasFreshlyExcludedDomain,
+  selectedAdRows,
+  onSelectedAdRowUpdate,
+  onSelectedAdRowDelete
 }: {
+  onSelectedAdRowUpdate: (data: SelectedAdRowUpsert) => unknown;
+  onSelectedAdRowDelete: (id: string) => unknown;
+  selectedAdRows: GetSelectedAdRowsReturns;
   hasFreshlyExcludedDomain: boolean;
   queryResultData: SearchCardItemData;
   isViewedAd: boolean;
@@ -73,6 +87,7 @@ function _SearchResultItem({
   onDomainExclude?: (id: string, exclude: boolean) => unknown;
   mediaData: MediaData | undefined;
 }) {
+  const [showSelectedAdRows, setShowSelectedAdRows] = useState(false);
   return (
     <div className="relative">
       {hasFreshlyExcludedDomain && domain && (
@@ -153,6 +168,23 @@ function _SearchResultItem({
         >
           Open ad snapshot
         </a>
+
+        {!!selectedAdRows.length || showSelectedAdRows ? (
+          <SelectedAdRows
+            onSelectedAdRowDelete={onSelectedAdRowDelete}
+            onSelectedAdRowUpdate={onSelectedAdRowUpdate}
+            rows={selectedAdRows}
+          />
+        ) : (
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id={`${id}-selected`}
+              checked={showSelectedAdRows}
+              onClick={() => setShowSelectedAdRows(true)}
+            />
+            <Label htmlFor={`${id}-selected`}>Select</Label>
+          </div>
+        )}
       </Card>
     </div>
   );

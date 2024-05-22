@@ -110,6 +110,7 @@ function SearchResults({
       </div>
 
       <SearchResultCards
+        selectedAdRowsData={selectedAdRows}
         mediaDataMap={mediaDataMap}
         fetchMedia={fetchMedia}
         searchResults={adjustedData}

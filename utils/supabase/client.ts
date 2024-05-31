@@ -16,7 +16,9 @@ export async function ensureAuth<T extends PostgrestMaybeSingleResponse<any>>(
 
 export async function refreshSession() {
   const session = await refreshAuth();
-  await createClientComponentClient().auth.setSession(session);
+  if (session) {
+    await createClientComponentClient().auth.setSession(session);
+  }
   return session;
 }
 

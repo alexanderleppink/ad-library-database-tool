@@ -6,7 +6,7 @@ import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
 import { groupBy, sortBy } from 'lodash-es';
 import type { SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
-import { ensureAuth } from '@/utils/supabase/client';
+import { ensureAuth, getFreshUser } from '@/utils/supabase/client';
 
 export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) {
   // sort to ensure consistent query key
@@ -30,11 +30,11 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
   );
 
   const upsertRow = async (data: SelectedAdRowUpsert) => {
-    if (!user) {
-      return;
-    }
+    const freshUser = await getFreshUser(user);
 
-    await ensureAuth(() => supabase.from('selected_ad_rows').upsert({ ...data, user_id: user.id }));
+    await ensureAuth(() =>
+      supabase.from('selected_ad_rows').upsert({ ...data, user_id: freshUser.id })
+    );
     await response.mutate((prev) => {
       if (!prev?.data) {
         return undefined;

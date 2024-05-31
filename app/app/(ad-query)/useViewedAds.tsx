@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
 import { sortBy } from 'lodash-es';
-import { ensureAuth, getFreshUser } from '@/utils/supabase/client';
+import { ensureAuth } from '@/utils/supabase/client';
 
 export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   const adIds = useMemo(
@@ -28,10 +28,12 @@ export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   );
 
   const addNewViewedAd = async (id: string) => {
-    const freshUser = await getFreshUser(user);
+    if (!user) {
+      return;
+    }
 
     setNewViewedAdsSet((prev) => new Set([...prev, id]));
-    await ensureAuth(() => supabase.from('viewed_ads').insert({ user_id: freshUser.id, id }));
+    await ensureAuth(() => supabase.from('viewed_ads').insert({ user_id: user.id, id }));
   };
 
   return {

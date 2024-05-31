@@ -1,7 +1,6 @@
 import type { PostgrestMaybeSingleResponse } from '@supabase/postgrest-js/src/types';
 import { signOut } from '@/utils/supabase/actions';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import type { User } from '@supabase/supabase-js';
 
 export async function ensureAuth<T extends PostgrestMaybeSingleResponse<any>>(
   fn: () => PromiseLike<T>
@@ -24,8 +23,4 @@ export async function refreshSession() {
     await signOut();
   }
   return user;
-}
-
-export async function getFreshUser(user: User | null) {
-  return user ?? (await refreshSession())!;
 }

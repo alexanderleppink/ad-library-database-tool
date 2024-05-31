@@ -1,5 +1,5 @@
 import type { PostgrestMaybeSingleResponse } from '@supabase/postgrest-js/src/types';
-import { refreshAuth } from '@/utils/supabase/actions';
+import { signOut } from '@/utils/supabase/actions';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { User } from '@supabase/supabase-js';
 
@@ -15,13 +15,17 @@ export async function ensureAuth<T extends PostgrestMaybeSingleResponse<any>>(
 }
 
 export async function refreshSession() {
-  const session = await refreshAuth();
-  if (session) {
-    await createClientComponentClient().auth.setSession(session);
+  const client = createClientComponentClient();
+  const {
+    error,
+    data: { user }
+  } = await client.auth.getUser();
+  if (error || !user) {
+    await signOut();
   }
-  return session;
+  return user;
 }
 
 export async function getFreshUser(user: User | null) {
-  return user ?? (await refreshSession().then(({ user }) => user))!;
+  return user ?? (await refreshSession())!;
 }

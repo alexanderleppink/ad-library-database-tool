@@ -11,6 +11,8 @@ function Providers({ children, session }: React.PropsWithChildren<{ session: Ses
   const [supabase] = useState(() => createPagesBrowserClient());
   return (
     <Flowbite theme={{ theme: customTheme }}>
+      {/*the initial session is only needed that the client doesn't have to fetch the user itself*/}
+      {/*but it uses the session data from the cookie*/}
       <SessionContextProvider supabaseClient={supabase} initialSession={session}>
         {children}
       </SessionContextProvider>

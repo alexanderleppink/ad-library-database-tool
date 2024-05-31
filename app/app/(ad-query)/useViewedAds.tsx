@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
 import { sortBy } from 'lodash-es';
+import { ensureAuth } from '@/utils/supabase/client';
 
 export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   const adIds = useMemo(
@@ -15,7 +16,7 @@ export function useViewedAds(searchResults: QueryResultData[] | undefined) {
   const user = useUser();
   const { data: supabaseReponse, ...response } = useSWR(
     adIds?.length ? ['viewedAds', ...adIds] : null,
-    async () => await supabase.rpc('ad_id_in', { ids: adIds || [] }).limit(100000)
+    async () => ensureAuth(() => supabase.rpc('ad_id_in', { ids: adIds || [] }).limit(100000))
   );
 
   const oldViewedAdsSet = useMemo(() => new Set(supabaseReponse?.data || []), [supabaseReponse]);
@@ -32,7 +33,7 @@ export function useViewedAds(searchResults: QueryResultData[] | undefined) {
     }
 
     setNewViewedAdsSet((prev) => new Set([...prev, id]));
-    await supabase.from('viewed_ads').insert({ user_id: user.id, id });
+    await ensureAuth(() => supabase.from('viewed_ads').insert({ user_id: user.id, id }));
   };
 
   return {

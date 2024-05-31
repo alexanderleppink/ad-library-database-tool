@@ -6,6 +6,7 @@ import type { ExcludedDomainData } from '@/types/supabaseHelper.types';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/supabase';
 import { TrashIcon } from '@heroicons/react/24/solid';
+import { ensureAuth } from '@/utils/supabase/client';
 
 interface ExcludedDomainsTableProps {
   excludedDomainsData: Pick<ExcludedDomainData, 'id'>[];
@@ -17,7 +18,7 @@ function ExcludedDomainsTable({ excludedDomainsData }: ExcludedDomainsTableProps
   const supabase = createClientComponentClient<Database>();
 
   const handleRemoveExcludedDomains = async () => {
-    await supabase.from('excluded_domains').delete().in('id', selectedDomains);
+    await ensureAuth(() => supabase.from('excluded_domains').delete().in('id', selectedDomains));
     setDeletedDomains((prev) => new Set([...prev, ...selectedDomains]));
     setSelectedDomains([]);
   };

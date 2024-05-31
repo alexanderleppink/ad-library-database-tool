@@ -6,6 +6,7 @@ import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { useUser } from '@supabase/auth-helpers-react';
 import { groupBy, sortBy } from 'lodash-es';
 import type { SelectedAdRowUpsert } from '@/types/supabaseHelper.types';
+import { ensureAuth } from '@/utils/supabase/client';
 
 export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) {
   // sort to ensure consistent query key
@@ -33,7 +34,7 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
       return;
     }
 
-    await supabase.from('selected_ad_rows').upsert({ ...data, user_id: user.id });
+    await ensureAuth(() => supabase.from('selected_ad_rows').upsert({ ...data, user_id: user.id }));
     await response.mutate((prev) => {
       if (!prev?.data) {
         return undefined;
@@ -50,7 +51,7 @@ export function useSelectedAdRows(searchResults: QueryResultData[] | undefined) 
   };
 
   const deleteRow = async (adRowId: string) => {
-    await supabase.from('selected_ad_rows').delete().eq('id', adRowId);
+    await ensureAuth(() => supabase.from('selected_ad_rows').delete().eq('id', adRowId));
     await response.mutate((prev) => {
       if (!prev?.data) {
         return undefined;

@@ -4,6 +4,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@/types/supabase';
 import { useUser } from '@supabase/auth-helpers-react';
 import useSWR from 'swr';
+import { ensureAuth } from '@/utils/supabase/client';
 
 const ExcludedDomainsContext = createContext<
   ReturnType<typeof useExcludedDomainsInternal> | undefined
@@ -41,7 +42,7 @@ function useExcludedDomainsInternal() {
 
   const { data: supabaseReponse, ...response } = useSWR(
     ['excludedDomains'],
-    async () => await supabase.from('excluded_domains').select('id').limit(100000)
+    async () => await ensureAuth(() => supabase.from('excluded_domains').select('id').limit(100000))
   );
 
   const excludedDomains = useMemo(() => {
@@ -60,7 +61,9 @@ function useExcludedDomainsInternal() {
     async (domain: string) => {
       const topLevelDomain = extractTopLevelDomain(domain) || domain;
       setFreshlyExcludedDomains((prev) => new Set([...prev, topLevelDomain]));
-      await supabase.from('excluded_domains').insert({ user_id: user?.id, id: topLevelDomain });
+      await ensureAuth(() =>
+        supabase.from('excluded_domains').insert({ user_id: user?.id, id: topLevelDomain })
+      );
     },
     [supabase, user?.id]
   );
@@ -73,7 +76,7 @@ function useExcludedDomainsInternal() {
         newSet.delete(topLevelDomain);
         return newSet;
       });
-      await supabase.from('excluded_domains').delete().eq('id', topLevelDomain);
+      await ensureAuth(() => supabase.from('excluded_domains').delete().eq('id', topLevelDomain));
     },
     [supabase]
   );

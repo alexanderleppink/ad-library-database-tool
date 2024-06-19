@@ -17,8 +17,37 @@ export const countryList = [
   'CA',
   'GB',
   'NZ',
-  'AU'
+  'AU',
+  'IE',
+  'BE',
+  'AT'
 ] as const;
+
+export const countryLabels = {
+  AT: { label: 'Austria' },
+  AU: { label: 'Australia' },
+  BE: { label: 'Belgium' },
+  CA: { label: 'Canada' },
+  CH: { label: 'Switzerland' },
+  DE: { label: 'Germany' },
+  DK: { label: 'Denmark' },
+  ES: { label: 'Spain' },
+  FI: { label: 'Finland' },
+  FR: { label: 'France' },
+  GB: { label: 'United Kingdom' },
+  IE: { label: 'Ireland' },
+  IT: { label: 'Italy' },
+  NL: { label: 'Netherlands' },
+  NO: { label: 'Norway' },
+  NZ: { label: 'New Zealand' },
+  SE: { label: 'Sweden' },
+  US: { label: 'United States' }
+} satisfies Record<
+  (typeof countryList)[number],
+  {
+    label: string;
+  }
+>;
 
 export const nonEuCountries = [
   'US',

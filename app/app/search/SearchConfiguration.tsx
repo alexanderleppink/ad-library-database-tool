@@ -2,6 +2,7 @@ import React from 'react';
 import { FormFieldController, SelectFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
+import { countryLabels } from '@/app/app/search/search.types';
 import {
   adStatusList,
   countryList,
@@ -67,7 +68,7 @@ function SearchConfiguration({
               value={value || []}
               items={countryList.map((country) => ({
                 value: country,
-                label: country,
+                label: countryLabels[country]?.label ?? country,
                 tooltip: nonEuCountries.includes(country as (typeof nonEuCountries)[number])
                   ? 'Only ads will be returned that also target EU countries'
                   : undefined

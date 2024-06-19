@@ -58,7 +58,10 @@ const availableCountries = [
   { name: 'Finland', code: 'FI' },
   { name: 'Denmark', code: 'DK' },
   { name: 'Australia', code: 'AU' },
-  { name: 'United Kingdom', code: 'GB' }
+  { name: 'United Kingdom', code: 'GB' },
+  { name: 'Ireland', code: 'IE' },
+  { name: 'Belgium', code: 'BE' },
+  { name: 'Austria', code: 'AT' }
 ] as const;
 
 export const SelectedAdRowSchema = z.object({

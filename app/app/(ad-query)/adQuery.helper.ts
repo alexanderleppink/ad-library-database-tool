@@ -46,7 +46,10 @@ async function executeQuery(
       errorResponse = await response.json().catch(() => 'Unknown error');
       continue;
     }
-    return await response.json();
+    return {
+      appliedPageSize: pageSize,
+      result: await response.json()
+    };
   }
 
   console.error('Failed to fetch data after 3 attempts');

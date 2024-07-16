@@ -7,22 +7,57 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          user: string | null;
+          user_id: string | null;
         };
         Insert: {
           created_at?: string;
           id: string;
-          user?: string | null;
+          user_id?: string | null;
         };
         Update: {
           created_at?: string;
           id?: string;
-          user?: string | null;
+          user_id?: string | null;
         };
         Relationships: [
           {
             foreignKeyName: 'public_excluded_domains_user_fkey';
-            columns: ['user'];
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      selected_ad_rows: {
+        Row: {
+          ad_id: string;
+          country: string;
+          created_at: string;
+          date: string;
+          id: string;
+          user_id: string | null;
+        };
+        Insert: {
+          ad_id: string;
+          country: string;
+          created_at?: string;
+          date: string;
+          id?: string;
+          user_id?: string | null;
+        };
+        Update: {
+          ad_id?: string;
+          country?: string;
+          created_at?: string;
+          date?: string;
+          id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'selected_ad_rows_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
@@ -59,22 +94,22 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          user: string | null;
+          user_id: string;
         };
         Insert: {
           created_at?: string;
           id: string;
-          user?: string | null;
+          user_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          user?: string | null;
+          user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: 'public_viewed_ads_user_fkey';
-            columns: ['user'];
+            foreignKeyName: 'viewed_ads_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
             referencedRelation: 'users';
             referencedColumns: ['id'];
@@ -91,6 +126,18 @@ export type Database = {
           ids: string[];
         };
         Returns: string[];
+      };
+      get_selected_ad_rows: {
+        Args: {
+          ad_ids: string[];
+          user_id: string;
+        };
+        Returns: {
+          ad_id: string;
+          ad_row_id: string;
+          country: string;
+          date: string;
+        }[];
       };
     };
     Enums: {

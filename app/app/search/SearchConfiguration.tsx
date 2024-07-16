@@ -2,6 +2,7 @@ import React from 'react';
 import { FormFieldController, SelectFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import type { SearchConfig } from '@/app/app/search/search.types';
+import { countryLabels } from '@/app/app/search/search.types';
 import {
   adStatusList,
   countryList,
@@ -9,11 +10,11 @@ import {
   nonEuCountries
 } from '@/app/app/search/search.types';
 import { Button, Card, Checkbox, Datepicker, Tooltip } from 'flowbite-react';
-import { format } from 'date-fns';
 import { XCircleIcon } from '@heroicons/react/24/solid';
 import MultipleSelectDropdown from '@/components/MultipleSelectDropdown';
 import { initialPageSize } from '@/app/app/(ad-query)/adQuery.types';
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { displayDate } from '@/utils/utils';
 
 interface SearchConfigurationProps {
   formObject: UseFormReturn<SearchConfig>;
@@ -67,7 +68,7 @@ function SearchConfiguration({
               value={value || []}
               items={countryList.map((country) => ({
                 value: country,
-                label: country,
+                label: countryLabels[country]?.label ?? country,
                 tooltip: nonEuCountries.includes(country as (typeof nonEuCountries)[number])
                   ? 'Only ads will be returned that also target EU countries'
                   : undefined
@@ -168,12 +169,5 @@ function DatepickerWithClearButton({
     </div>
   );
 }
-
-const displayDate = (date: Date | undefined | string | null) => {
-  if (date instanceof Date) {
-    return format(date, 'MMM dd, yyyy');
-  }
-  return '';
-};
 
 export default SearchConfiguration;

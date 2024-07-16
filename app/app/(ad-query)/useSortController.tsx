@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { SearchCardItemData } from '@/app/app/(ad-query)/SearchResultCards';
 import { orderBy } from 'lodash-es';
 import { SelectFormField, TextInputFormField } from '@/components/FormField';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
+import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 
 type SortColumnProperty = keyof Pick<
   SearchCardItemData,
@@ -12,29 +13,44 @@ type SortColumnProperty = keyof Pick<
 
 type SortDirection = 'asc' | 'desc';
 
+type ProductType = 'shopify' | 'all';
+
 interface SortForm {
   sortDirection: SortDirection;
   sortColumn: SortColumnProperty;
   minimumReach: number;
+  productType: ProductType;
 }
 
-export function useSortController(unsortedData: SearchCardItemData[] | undefined) {
+export function useSortController(
+  unsortedData: SearchCardItemData[] | undefined,
+  mediaDataMap: Map<string, MediaData>
+) {
   const formObject = useForm<SortForm>({
     defaultValues: {
       sortColumn: 'ad_delivery_start_time',
       sortDirection: 'desc',
-      minimumReach: 25000
+      minimumReach: 25000,
+      productType: 'all'
     }
   });
 
   const sortColumn = formObject.watch('sortColumn');
   const sortDirection = formObject.watch('sortDirection');
   const minimumReach = formObject.watch('minimumReach');
+  const productType = formObject.watch('productType');
+  const sortedData = useMemo(() => {
+    const filterMinReach = ({ eu_total_reach }: SearchCardItemData) =>
+      eu_total_reach >= minimumReach;
+
+    return orderBy(unsortedData?.filter(filterMinReach) ?? [], [sortColumn], [sortDirection]);
+  }, [minimumReach, sortColumn, sortDirection, unsortedData]);
 
   return {
-    sortedData: orderBy(unsortedData, [sortColumn], [sortDirection]).filter(
-      ({ eu_total_reach }) => eu_total_reach >= minimumReach
-    ),
+    mediaFilters: {
+      productType
+    },
+    sortedData,
     sortController: <SortController formObject={formObject} />
   };
 }
@@ -46,6 +62,8 @@ interface SortControllerProps {
 function SortController({
   formObject: {
     register,
+    setValue,
+    getValues,
     formState: { errors }
   }
 }: SortControllerProps) {
@@ -63,11 +81,20 @@ function SortController({
       </SelectFormField>
 
       <TextInputFormField
-        {...register('minimumReach')}
+        {...{
+          name: 'minimumReach',
+          defaultValue: getValues().minimumReach,
+          onBlur: (event) => setValue('minimumReach', Number(event.target.value))
+        }}
         label="Minimum reach"
         type="number"
         errors={errors}
       />
+
+      <SelectFormField {...register('productType')} label="Product type" errors={errors}>
+        <option value={'all' satisfies ProductType}>All</option>
+        <option value={'shopify' satisfies ProductType}>Shopify</option>
+      </SelectFormField>
     </div>
   );
 }

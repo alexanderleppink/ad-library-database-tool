@@ -5,6 +5,9 @@ import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import SearchResultCards from '@/app/app/(ad-query)/SearchResultCards';
 import { useSortController } from '@/app/app/(ad-query)/useSortController';
 import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
+import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
+import { usePrefetchShopifyProducts } from '@/app/app/(ad-query)/usePrefetchShopifyProducts';
+import { useSelectedAdRows } from '@/app/app/(ad-query)/useSelectedAdRows';
 
 function SearchResults({
   queryResultData,
@@ -33,9 +36,22 @@ function SearchResults({
       .filter(({ domain }) => !isDomainExcluded(domain));
   }, [queryResultData, isDomainExcluded]);
 
-  const { sortController, sortedData } = useSortController(resultsWithDomain);
+  const { mediaDataMap, isFetching, fetchMedia } = useFetchMedia();
+
+  const { sortController, sortedData, mediaFilters } = useSortController(
+    resultsWithDomain,
+    mediaDataMap
+  );
 
   const viewedAdsData = useViewedAds(sortedData);
+  const selectedAdRows = useSelectedAdRows(sortedData);
+
+  const adjustedData = usePrefetchShopifyProducts(
+    sortedData,
+    fetchMedia,
+    mediaDataMap,
+    mediaFilters
+  );
 
   if (isLoading) {
     return (
@@ -57,7 +73,7 @@ function SearchResults({
     );
   }
 
-  if (!queryResultData || !sortedData) {
+  if (!queryResultData || !adjustedData) {
     return null;
   }
 
@@ -69,7 +85,7 @@ function SearchResults({
 
       <div className="flex items-center justify-between">
         <div>
-          Found <span className="font-bold text-green-700">{sortedData.length}</span> results (
+          Found <span className="font-bold text-green-700">{adjustedData.length}</span> results (
           <b>{queryResultData.length}</b> before filtering)
         </div>
 
@@ -82,21 +98,30 @@ function SearchResults({
           ) : excludedDomainsResponse.error ? (
             <Alert color="failure">Failed to load excluded domains!</Alert>
           ) : null}
-          {viewedAdsData.isLoading ? (
+          {viewedAdsData.isLoading || selectedAdRows.isLoading ? (
             <div className="flex items-center space-x-2">
               <Spinner aria-label="loading" />
               <span>Loading viewed ads...</span>
             </div>
-          ) : viewedAdsData.error ? (
+          ) : viewedAdsData.error || selectedAdRows.error ? (
             <Alert color="failure">Failed to load viewed ads!</Alert>
           ) : null}
         </div>
       </div>
 
-      {!!sortedData.length ? (
-        <SearchResultCards searchResults={sortedData} viewedAdsData={viewedAdsData} />
-      ) : (
-        <div className="flex justify-center text-center p-4">No results found</div>
+      <SearchResultCards
+        selectedAdRowsData={selectedAdRows}
+        mediaDataMap={mediaDataMap}
+        fetchMedia={fetchMedia}
+        searchResults={adjustedData}
+        viewedAdsData={viewedAdsData}
+      />
+
+      {isFetching && (
+        <div className="flex flex-col p-8 items-center justify-center gap-8">
+          <Spinner size="lg" />
+          <span>Fetching offer urls & media...</span>
+        </div>
       )}
     </div>
   );

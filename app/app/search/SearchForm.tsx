@@ -10,8 +10,8 @@ import { createDefaultSearchConfig, SearchConfigSchema } from '@/app/app/search/
 import SearchConfiguration from '@/app/app/search/SearchConfiguration';
 import { Button, Card, TextInput } from 'flowbite-react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import type { SearchQueryResultData } from '@/app/app/search/searchAds';
-import { searchAds } from '@/app/app/search/searchAds';
+import type { SearchQueryResultData } from '@/app/app/search/buildSearchUrl';
+import { buildSearchUrl } from '@/app/app/search/buildSearchUrl';
 import SearchResults from '@/app/app/(ad-query)/SearchResults';
 import useSWRMutation from 'swr/mutation';
 import clsx from 'clsx';
@@ -27,7 +27,7 @@ export function useSearch() {
   return useSWRMutation(
     'search',
     async (_, { arg }: { arg: SearchConfig }) =>
-      await queryAllPages(searchAds)(arg, {
+      await queryAllPages(await buildSearchUrl(arg))({
         totalLimit: arg.maxResults,
         pageSize: arg.pageSize
       }).then((results) => (arg.checkOnlyStartDate ? filterStartDate(results, arg) : results))

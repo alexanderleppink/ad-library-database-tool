@@ -16,20 +16,13 @@ const fields = mutable([
 export type SearchQueryResults = QueryResult<(typeof fields)[number]>;
 export type SearchQueryResultData = SearchQueryResults['data'][number];
 
-export async function searchAds(searchConfig: SearchConfig): Promise<SearchQueryResults> {
+export async function buildSearchUrl(searchConfig: SearchConfig) {
   const queryParams = new URLSearchParams({
     ...buildSearchQuery(searchConfig),
     access_token: await getMetaAccessToken()
   });
 
-  const requestOptions = {
-    method: 'GET'
-  };
-
-  return fetch(
-    `https://graph.facebook.com/ads_archive?${queryParams.toString()}`,
-    requestOptions
-  ).then((response) => response.json());
+  return `https://graph.facebook.com/ads_archive?${queryParams.toString()}`;
 }
 
 function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {

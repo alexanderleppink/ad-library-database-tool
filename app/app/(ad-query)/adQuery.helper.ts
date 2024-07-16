@@ -38,12 +38,13 @@ async function executeQuery(
 }> {
   let errorResponse = null;
   for (let i = 0; i < 3; i++) {
-    pageSize = Math.ceil(pageSize / 2);
-    const adjustedUrl = i === 0 ? url : replaceQueryParams(url, { limit: pageSize.toString() });
+    const adjustedUrl = replaceQueryParams(url, { limit: pageSize.toString() });
     const response = await fetch(adjustedUrl);
 
     if (response.status >= 400) {
       errorResponse = await response.json().catch(() => 'Unknown error');
+      pageSize = Math.ceil(pageSize / 2);
+      console.warn(`${i + 1}. attempt failed. Will try again or cancel.`);
       continue;
     }
     return {

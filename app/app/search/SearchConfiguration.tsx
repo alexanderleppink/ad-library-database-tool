@@ -133,6 +133,7 @@ function SearchConfiguration({
           <option>{initialPageSize * 4}</option>
           <option>{initialPageSize * 8}</option>
           <option>{initialPageSize * 16}</option>
+          <option value={0}>No limit</option>
         </SelectFormField>
 
         <SelectFormField {...register('status')} label="Ad status" errors={errors}>

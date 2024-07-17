@@ -117,8 +117,8 @@ function SearchConfiguration({
           <option>{1000}</option>
           <option>{1500}</option>
           <option>{2000}</option>
-          <option>{3000}</option>
           <option>{initialPageSize}</option>
+          <option>{4000}</option>
         </SelectFormField>
 
         <SelectFormField
@@ -126,7 +126,7 @@ function SearchConfiguration({
           label="Maximum results"
           errors={errors}
         >
-          <option>{initialPageSize / 4}</option>
+          <option>{initialPageSize / 3}</option>
           <option>{initialPageSize / 2}</option>
           <option>{initialPageSize}</option>
           <option>{initialPageSize * 2}</option>

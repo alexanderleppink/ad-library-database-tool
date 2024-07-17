@@ -10,6 +10,7 @@ const fields = mutable([
   'ad_delivery_start_time',
   'ad_snapshot_url',
   'eu_total_reach',
+  'ad_delivery_stop_time',
   'id'
 ] as const satisfies ResultField[]);
 

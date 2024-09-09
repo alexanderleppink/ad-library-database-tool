@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import type { QueryResultData } from '@/app/app/(ad-query)/adQuery.types';
 import { Card, Checkbox, Label, Spinner } from 'flowbite-react';
 import type { useViewedAds } from '@/app/app/(ad-query)/useViewedAds';
-import { differenceInDays, format } from 'date-fns';
+import { format } from 'date-fns';
 import clsx from 'clsx';
 import type { MediaData, useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { FetchMediaClusterItem } from '@/app/app/(ad-query)/useFetchMedia';
@@ -15,6 +15,9 @@ import SelectedAdRows from '@/app/app/(ad-query)/SelectedAdRows';
 
 export interface SearchCardItemData extends QueryResultData {
   domain: string | undefined;
+  totalSpent: number;
+  daysRunning: number;
+  spentPerDay: number;
 }
 
 export interface SearchResultsCardsProps {
@@ -73,7 +76,9 @@ function _SearchResultItem({
     ad_snapshot_url,
     ad_delivery_start_time,
     eu_total_reach,
-    ad_delivery_stop_time
+    totalSpent,
+    daysRunning,
+    spentPerDay
   },
   isViewedAd,
   onView,
@@ -95,13 +100,6 @@ function _SearchResultItem({
   mediaData: MediaData | undefined;
 }) {
   const [showSelectedAdRows, setShowSelectedAdRows] = useState(false);
-  const totalSpent = Math.round(eu_total_reach * 0.02);
-  const daysRunning =
-    differenceInDays(
-      Math.min(new Date(ad_delivery_stop_time ?? new Date()).getTime(), new Date().getTime()),
-      new Date(ad_delivery_start_time)
-    ) + 1;
-  const spentPerDay = Math.round(totalSpent / daysRunning);
   return (
     <div className="relative">
       {hasFreshlyExcludedDomain && domain && (

@@ -8,6 +8,7 @@ import { useExcludedDomains } from '@/contexts/ExcludedDomainsContext';
 import { useFetchMedia } from '@/app/app/(ad-query)/useFetchMedia';
 import { usePrefetchShopifyProducts } from '@/app/app/(ad-query)/usePrefetchShopifyProducts';
 import { useSelectedAdRows } from '@/app/app/(ad-query)/useSelectedAdRows';
+import { differenceInDays } from 'date-fns';
 
 function SearchResults({
   queryResultData,
@@ -26,20 +27,37 @@ function SearchResults({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryResultData]);
 
-  const resultsWithDomain = useMemo(() => {
-    return queryResultData
-      ?.filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
-      .map((result) => ({
-        ...result,
-        domain: result.ad_creative_link_captions?.[0].replace(/https?:\/\//, '') || ''
-      }))
-      .filter(({ domain }) => !isDomainExcluded(domain));
-  }, [queryResultData, isDomainExcluded]);
+  const enrichedResults = useMemo(
+    () =>
+      queryResultData
+        ?.filter(({ ad_creative_link_captions }) => ad_creative_link_captions?.length)
+        .map((result) => {
+          const totalSpent = Math.round(result.eu_total_reach * 0.02);
+          const daysRunning =
+            differenceInDays(
+              Math.min(
+                new Date(result.ad_delivery_stop_time ?? new Date()).getTime(),
+                new Date().getTime()
+              ),
+              new Date(result.ad_delivery_start_time)
+            ) + 1;
+          const spentPerDay = Math.round(totalSpent / daysRunning);
+          return {
+            ...result,
+            domain: result.ad_creative_link_captions?.[0].replace(/https?:\/\//, '') || '',
+            totalSpent,
+            daysRunning,
+            spentPerDay
+          };
+        })
+        .filter(({ domain }) => !isDomainExcluded(domain)),
+    [queryResultData, isDomainExcluded]
+  );
 
   const { mediaDataMap, isFetching, fetchMedia } = useFetchMedia();
 
   const { sortController, sortedData, mediaFilters } = useSortController(
-    resultsWithDomain,
+    enrichedResults,
     mediaDataMap
   );
 

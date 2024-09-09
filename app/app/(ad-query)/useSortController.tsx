@@ -8,7 +8,7 @@ import type { MediaData } from '@/app/app/(ad-query)/useFetchMedia';
 
 type SortColumnProperty = keyof Pick<
   SearchCardItemData,
-  'eu_total_reach' | 'ad_delivery_start_time' | 'domain'
+  'eu_total_reach' | 'ad_delivery_start_time' | 'domain' | 'spentPerDay'
 >;
 
 type SortDirection = 'asc' | 'desc';
@@ -72,6 +72,7 @@ function SortController({
       <SelectFormField {...register('sortColumn')} label="Sort by field" errors={errors}>
         <option value={'domain' satisfies SortColumnProperty}>Domain</option>
         <option value={'eu_total_reach' satisfies SortColumnProperty}>Reach</option>
+        <option value={'spentPerDay' satisfies SortColumnProperty}>Spent/day</option>
         <option value={'ad_delivery_start_time' satisfies SortColumnProperty}>Start Date</option>
       </SelectFormField>
 

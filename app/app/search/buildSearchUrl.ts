@@ -23,7 +23,7 @@ export async function buildSearchUrl(searchConfig: SearchConfig) {
     access_token: await getMetaAccessToken()
   });
 
-  return `https://graph.facebook.com/ads_archive?${queryParams.toString()}`;
+  return `https://graph.facebook.com/v21.0/ads_archive?${queryParams.toString()}`;
 }
 
 function buildSearchQuery(searchConfig: SearchConfig): Record<string, string> {
